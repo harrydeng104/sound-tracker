@@ -1,14 +1,26 @@
 import { useState, useEffect } from 'react'
 
-const clientId = import.meta.env.VITE_CLIENT_ID;
-const clientSecret = import.meta.env.VITE_CLIENT_SECRET;
+const clientId = import.meta.env.VITE_CLIENT_ID
+const clientSecret = import.meta.env.VITE_CLIENT_SECRET
 
-const playlistId   = "4S0TiIINuzUV63b1TYFNK8";
+// const playlistId   = "4S0TiIINuzUV63b1TYFNK8"
 
 function SongList() {
-    const [items, setItems] = useState([]);
+    const [items, setItems] = useState([])
+    const [newId, setNewId] = useState("")
+    const [playlistId, setPlaylistId] = useState("") 
+
+    function handleInputChange(event) {
+        setNewId(event.target.value)
+    }
+
+    function setId() {
+        setPlaylistId(newId.trim())
+        setNewId("")
+    }
 
     useEffect(() => {
+        if (!playlistId) return
         const getData = async () => {
             const url = "https://accounts.spotify.com/api/token"
 
@@ -44,14 +56,31 @@ function SongList() {
         }
 
         getData()
-    }, [])
+    }, [playlistId])
 
     return (<>
-        <div>
+
+        <div className = "song-list">
             <h1>Songs</h1>
+                <div> 
+                    <input 
+                        type = "text"
+                        placeholder = "Enter a playlist ID..."
+                        value = {newId}
+                        onChange = {handleInputChange}
+                    />
+                    <button 
+                        className = "enter-button"
+                        onClick = {setId}
+                    >
+                        Enter
+                    </button>
+                </div>
             <ul>
                 {items.map((name, i) => (
-                <li key={i}>{name}</li>
+                <li key = {i}>
+                    {name}
+                </li>
                 ))}
             </ul>
         </div>
