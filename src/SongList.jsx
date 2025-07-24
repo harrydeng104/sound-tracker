@@ -3,8 +3,6 @@ import { useState, useEffect } from 'react'
 const clientId = import.meta.env.VITE_CLIENT_ID
 const clientSecret = import.meta.env.VITE_CLIENT_SECRET
 
-// const playlistId   = "4S0TiIINuzUV63b1TYFNK8"
-
 function SongList() {
     const [items, setItems] = useState([])
     const [newId, setNewId] = useState("")
@@ -15,7 +13,15 @@ function SongList() {
     }
 
     function setId() {
-        setPlaylistId(newId.trim())
+        let id = newId.trim()
+
+        const match = id.match(/playlist\/([A-Za-z0-9]+)/)
+
+        if (match) {
+            id = match[1];
+        }
+
+        setPlaylistId(id)
         setNewId("")
     }
 
@@ -65,9 +71,10 @@ function SongList() {
                 <div> 
                     <input 
                         type = "text"
-                        placeholder = "Enter a playlist ID..."
+                        placeholder = "Enter playlist link..."
                         value = {newId}
                         onChange = {handleInputChange}
+                        onKeyDown = { e => { if (e.key === 'Enter') setId() }}
                     />
                     <button 
                         className = "enter-button"
