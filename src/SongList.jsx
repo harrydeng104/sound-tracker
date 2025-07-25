@@ -45,16 +45,23 @@ function SongList() {
                 
                 const response = await token.json()
                 const access_token = response.access_token
-                
-                const body = await fetch(
-                    `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
-                    { headers: { Authorization: `Bearer ${access_token}` } }
-                )
 
-                const fullResponse = await body.json()
-                const items = fullResponse.items
+                //
 
-                setItems(items.map(i => i.track.name))
+                let allItems = []
+                let nextUrl = `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=100`
+                let headers = { Authorization: `Bearer ${access_token}` } 
+
+                while (nextUrl != null) {
+                    const body = await fetch(nextUrl, { headers })
+                    const fullResponse = await body.json()
+                    allItems.push(...fullResponse.items)
+                    nextUrl = fullResponse.next
+                }
+
+                //
+
+                setItems(allItems.map(i => i.track.name))
             }
             catch (error) {
                 console.error(error)
