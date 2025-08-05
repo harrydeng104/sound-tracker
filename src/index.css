@@ -1,0 +1,77 @@
+* {
+    box-sizing: border-box;
+}
+header {
+    background-color: azure;
+    text-align: center;
+    padding: 10px;
+}
+
+.navbar {
+    background-color: aquamarine;
+    text-align: center;
+    padding: 10px;
+}
+
+aside {
+    width: 40%;
+    float: right;
+}
+
+section {
+    width: 60%;
+    float: left;
+}
+
+.song-list {
+    text-align: center;
+    border: 1px solid black;
+}
+
+.song-stats {
+    text-align: center;
+    border: 1px solid black;
+}
+
+li {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid black;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+}
+
+.song-image {
+    width: 50px;
+    margin-right: 10px;
+    border-radius: 5px;
+}
+
+.song-info {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.delete-button {
+    margin-left: 10px;
+}
+
+li:hover {
+    border-color: greenyellow;
+}
+
+/* .rank-page {
+    display: flex;
+    flex-direction: row-reverse;
+} */
+
+.selected-song {
+    border-color: palevioletred;
+}
+

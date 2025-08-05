@@ -3,10 +3,11 @@ import { useState, useEffect } from 'react'
 const clientId = import.meta.env.VITE_CLIENT_ID
 const clientSecret = import.meta.env.VITE_CLIENT_SECRET
 
-function SongList() {
+function SongList({ onSongsLoaded, onSelectSong, selectedIndex }) {
     const [items, setItems] = useState([])
     const [newId, setNewId] = useState("")
     const [playlistId, setPlaylistId] = useState("") 
+    const [reload, forceReload] = useState(0)
 
     function handleInputChange(event) {
         setNewId(event.target.value)
@@ -23,6 +24,24 @@ function SongList() {
 
         setPlaylistId(id)
         setNewId("")
+        forceReload(c => c + 1)
+    }
+
+    function deleteSong(index) {
+        const updatedSongs = items.filter((_, i) => i !== index)
+        setItems(updatedSongs)
+
+        if (selectedIndex === index) {
+            onSelectSong(updatedSongs.length > 0 ? 0 : null)
+        }
+        else if (selectedIndex > index) {
+            onSelectSong(selectedIndex - 1)
+        }
+    }
+
+    function clearSongs() {
+        setItems([])
+        onSelectSong(null)
     }
 
     useEffect(() => {
@@ -46,8 +65,6 @@ function SongList() {
                 const response = await token.json()
                 const access_token = response.access_token
 
-                //
-
                 let allItems = []
                 let nextUrl = `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=100`
                 let headers = { Authorization: `Bearer ${access_token}` } 
@@ -59,9 +76,24 @@ function SongList() {
                     nextUrl = fullResponse.next
                 }
 
-                //
+                const mapItems = allItems.map(item => {
+                    const song = item.track
 
-                setItems(allItems.map(i => i.track.name))
+                    return {
+                        name: song.name,
+                        artists: song.artists.map(a => a.name).join(', '),
+                        albumArt: song.album.images[0]?.url,
+                        vocalScore: null,
+                        backgroundScore: null, 
+                        lyricScore: null, 
+                        cohesionScore: null,
+                        flowScore: null, 
+                        totalScore: null,
+                    }
+                })
+
+                setItems(mapItems)
+                onSongsLoaded?.(mapItems)
             }
             catch (error) {
                 console.error(error)
@@ -69,7 +101,7 @@ function SongList() {
         }
 
         getData()
-    }, [playlistId])
+    }, [playlistId, reload])
 
     return (<>
 
@@ -81,7 +113,7 @@ function SongList() {
                         placeholder = "Enter playlist link..."
                         value = {newId}
                         onChange = {handleInputChange}
-                        onKeyDown = { e => { if (e.key === 'Enter') setId() }}
+                        onKeyDown = {e => { if (e.key === 'Enter') setId() }}
                     />
                     <button 
                         className = "enter-button"
@@ -89,13 +121,36 @@ function SongList() {
                     >
                         Enter
                     </button>
+                    <button 
+                        className = "clear-button"
+                        onClick = {clearSongs}
+                    >
+                        Clear All
+                    </button>
                 </div>
             <ul>
-                {items.map((name, i) => (
-                <li key = {i}>
-                    {name}
-                </li>
-                ))}
+                {items.map((song, index) => 
+                    <li 
+                        key = {song.id}
+                        className = {index === selectedIndex ? 'selected-song' : 'song-item'} 
+                        onClick = {() => onSelectSong(index)}
+                    >
+                        {song.albumArt != null && (<img className = "song-image" src = {song.albumArt} />)}
+                        <div className = "song-info">
+                            <span className = "song-name">{song.name}</span>
+                            <span className = "song-artists">{song.artists}</span>
+                        </div>
+                        <button
+                            className = "delete-button"
+                            onClick = {e => {
+                                e.stopPropagation()
+                                deleteSong(index)
+                            }}
+                        >
+                            🗑️
+                        </button>
+                    </li>
+                )}
             </ul>
         </div>
     </>)
