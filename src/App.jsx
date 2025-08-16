@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import SongList from './SongList.jsx'
-import SongStats from './SongStats.jsx'
+import SongForm from './SongForm.jsx'
 import MainList from './MainList.jsx'
 
 function App() {
@@ -13,16 +13,7 @@ function App() {
 
     function handleSongsLoaded(loadedSongs) {
         setSongs(loadedSongs)
-        setSelectedIndex(prev => {
-            if (loadedSongs.length === 0) {
-                return null
-            }
-            if (prev === null) {
-                return 0
-            }
-
-            return prev
-        })
+        setSelectedIndex(loadedSongs.length > 0 ? 0 : null)
     }
 
     function handleSelectSong(index) {
@@ -39,20 +30,13 @@ function App() {
     
     const selectedSong = songs[selectedIndex] ?? null
 
-function handleCompleteSong() {
-    const idx = selectedIndex;
+    function handleCompleteSong(compSong) {
+        setSongs(s => s.filter(sng => sng.id !== compSong.id))
 
-    if (idx === null) 
-        return;
+        setCompletedSongs(c => [...c, compSong])
 
-    const compSong = songs[idx];
-    const newSongs = songs.filter((_, i) => i !== idx);
-
-    setSongs(newSongs);
-    setCompletedSongs(prev => [...prev, compSong]);
-    
-    setSelectedIndex(newSongs.length > 0 ? 0 : null);
-}
+        setSelectedIndex(s => (s > 0 ? 0 : null))
+    }
 
     return (
         <div className = "app-body">
@@ -84,11 +68,12 @@ function handleCompleteSong() {
                                 onSongsLoaded = {handleSongsLoaded} 
                                 onSelectSong = {handleSelectSong} 
                                 selectedIndex = {selectedIndex}
+                                songs = {songs}
                             />
                         </aside>
                         <section>
-                            <SongStats 
-                                song = {selectedSong} 
+                            <SongForm 
+                                song = {selectedSong}
                                 onChange = {handleValueChange}
                                 onComplete = {handleCompleteSong}
                             />

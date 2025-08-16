@@ -3,8 +3,7 @@ import { useState, useEffect } from 'react'
 const clientId = import.meta.env.VITE_CLIENT_ID
 const clientSecret = import.meta.env.VITE_CLIENT_SECRET
 
-function SongList({ onSongsLoaded, onSelectSong, selectedIndex }) {
-    const [items, setItems] = useState([])
+function SongList({ onSongsLoaded, onSelectSong, selectedIndex, songs }) {
     const [newId, setNewId] = useState("")
     const [playlistId, setPlaylistId] = useState("") 
     const [reload, forceReload] = useState(0)
@@ -28,8 +27,8 @@ function SongList({ onSongsLoaded, onSelectSong, selectedIndex }) {
     }
 
     function deleteSong(index) {
-        const updatedSongs = items.filter((_, i) => i !== index)
-        setItems(updatedSongs)
+        const updatedSongs = songs.filter((_, i) => i !== index)
+        onSongsLoaded(updatedSongs)
 
         if (selectedIndex === index) {
             onSelectSong(updatedSongs.length > 0 ? 0 : null)
@@ -40,7 +39,7 @@ function SongList({ onSongsLoaded, onSelectSong, selectedIndex }) {
     }
 
     function clearSongs() {
-        setItems([])
+        onSongsLoaded([])
         onSelectSong(null)
     }
 
@@ -83,6 +82,8 @@ function SongList({ onSongsLoaded, onSelectSong, selectedIndex }) {
                         name: song.name,
                         artists: song.artists.map(a => a.name).join(', '),
                         albumArt: song.album.images[0]?.url,
+                        id: song.id,
+
                         vocalScore: null,
                         backgroundScore: null, 
                         lyricScore: null, 
@@ -92,8 +93,7 @@ function SongList({ onSongsLoaded, onSelectSong, selectedIndex }) {
                     }
                 })
 
-                setItems(mapItems)
-                onSongsLoaded?.(mapItems)
+                onSongsLoaded(mapItems)
             }
             catch (error) {
                 console.error(error)
@@ -129,7 +129,7 @@ function SongList({ onSongsLoaded, onSelectSong, selectedIndex }) {
                     </button>
                 </div>
             <ul>
-                {items.map((song, index) => 
+                {songs.map((song, index) => 
                     <li 
                         key = {song.id}
                         className = {index === selectedIndex ? 'selected-song' : 'song-item'} 
