@@ -34,7 +34,9 @@ jobs:
     needs: build
 
     permissions:
-      contents: write
+      contents: read
+      pages: write
+      id-token: write
 
     steps:
     - uses: actions/deploy-pages@v4
