@@ -26,6 +26,7 @@ function MainList({ songs, onUncomp }) {
                         <div className = "song-info">
                             <span className = "song-name">{song.name}</span>
                             <span className = "song-artists">{song.artists}</span>
+                            <span className = "song-totalScore">{song.totalScore}</span>
                         </div>
                         <button
                             className = "delete-button"
