@@ -83,13 +83,14 @@ function SongList({ onSongsLoaded, onSelectSong, selectedIndex, songs }) {
                         artists: song.artists.map(a => a.name).join(', '),
                         albumArt: song.album.images[0]?.url,
                         id: song.id,
-
+                        
                         vocalScore: null,
                         backgroundScore: null, 
                         lyricScore: null, 
                         cohesionScore: null,
                         flowScore: null, 
                         totalScore: null,
+                        completed: false,
                     }
                 })
 

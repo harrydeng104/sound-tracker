@@ -9,11 +9,20 @@ function App() {
 
     const [songs, setSongs] = useState([])
     const [selectedIndex, setSelectedIndex] = useState(null)
-    const [completedSongs, setCompletedSongs] = useState([])
+    // const [completedSongs, setCompletedSongs] = useState([])
+
+    const queueSongs = songs.filter(sng => sng.completed !== true)
+    const compSongs = songs.filter(sng => sng.completed === true)
 
     function handleSongsLoaded(loadedSongs) {
-        setSongs(loadedSongs)
-        setSelectedIndex(loadedSongs.length > 0 ? 0 : null)
+        setSongs(existing => {
+            const existingIds = new Set(existing.map(s => s.id))
+            const newSongs = loadedSongs.filter(song => !existingIds.has(song.id))
+            const combined = [...existing, ...newSongs]
+            const incompleteCount = combined.filter(s => !s.completed).length
+            setSelectedIndex(incompleteCount > 0 ? 0 : null)
+            return combined
+        })
     }
 
     function handleSelectSong(index) {
@@ -21,21 +30,27 @@ function App() {
     }
 
     function handleValueChange(field, value) {
+        const targetSong = queueSongs[selectedIndex]
+        if (targetSong == null) return
+        
         setSongs(s =>
-            s.map((song, i) =>
-                i === selectedIndex ? { ...song, [field]: value } : song
+            s.map(song =>
+                song.id === targetSong.id ? { ...song, [field]: value } : song
             )
         )
     }
     
-    const selectedSong = songs[selectedIndex] ?? null
-
+    const selectedSong = queueSongs[selectedIndex] ?? null
+    
     function handleCompleteSong(compSong) {
-        setSongs(s => s.filter(sng => sng.id !== compSong.id))
-
-        setCompletedSongs(c => [...c, compSong])
-
-        setSelectedIndex(s => (s > 0 ? 0 : null))
+        setSongs(s => 
+            s.map(song => 
+                song.id === compSong.id 
+                    ? { ...compSong, completed: true }
+                    : song
+            )
+        )
+        setSelectedIndex(0)
     }
 
     return (
@@ -68,7 +83,7 @@ function App() {
                                 onSongsLoaded = {handleSongsLoaded} 
                                 onSelectSong = {handleSelectSong} 
                                 selectedIndex = {selectedIndex}
-                                songs = {songs}
+                                songs = {queueSongs}
                             />
                         </aside>
                         <section>
@@ -81,7 +96,7 @@ function App() {
                     </div>
                 ) : (
                     <MainList 
-                        songs = {completedSongs} 
+                        songs = {compSongs} 
                     />
                 )}
             </main>
