@@ -53,6 +53,16 @@ function App() {
         setSelectedIndex(0)
     }
 
+    function handleUncompleteSong(uncompSong) {
+        setSongs(s => 
+            s.map(song => 
+                song.id === uncompSong.id 
+                    ? { ...song, completed: false } 
+                    : song
+            )
+        )
+    }
+
     return (
         <div className = "app-body">
 
@@ -97,6 +107,7 @@ function App() {
                 ) : (
                     <MainList 
                         songs = {compSongs} 
+                        onUncomp = {handleUncompleteSong}
                     />
                 )}
             </main>

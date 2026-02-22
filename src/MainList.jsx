@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import SongStats from './SongStats.jsx'
 
-function MainList({ songs }) {
+function MainList({ songs, onUncomp }) {
     const [selectedIndex, setSelectedIndex] = useState(null)
 
     if (songs == null || songs.length === 0) {
@@ -27,6 +27,15 @@ function MainList({ songs }) {
                             <span className = "song-name">{song.name}</span>
                             <span className = "song-artists">{song.artists}</span>
                         </div>
+                        <button
+                            className = "delete-button"
+                            onClick = {e => {
+                                e.stopPropagation()
+                                onUncomp(song)
+                            }}
+                        >
+                            🗑️
+                        </button>
                     </li>
                 )}
             </ul>

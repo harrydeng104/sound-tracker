@@ -111,7 +111,6 @@ function SongForm({ song, onChange, onComplete }) {
                     value = {flowScore ?? ''}
                     onChange = {e => setFlowScore(e.target.valueAsNumber)}
                 />
-
             </div>
 
             <button 
