@@ -38,11 +38,6 @@ function SongList({ onSongsLoaded, onSelectSong, selectedIndex, songs }) {
         }
     }
 
-    function clearSongs() {
-        onSongsLoaded([])
-        onSelectSong(null)
-    }
-
     useEffect(() => {
         if (!playlistId) return
         const getData = async () => {
@@ -122,12 +117,6 @@ function SongList({ onSongsLoaded, onSelectSong, selectedIndex, songs }) {
                     >
                         Enter
                     </button>
-                    <button 
-                        className = "clear-button"
-                        onClick = {clearSongs}
-                    >
-                        Clear All
-                    </button>
                 </div>
             <ul>
                 {songs.map((song, index) => 
@@ -148,6 +137,7 @@ function SongList({ onSongsLoaded, onSelectSong, selectedIndex, songs }) {
                                 deleteSong(index)
                             }}
                         >
+
                             🗑️
                         </button>
                     </li>
