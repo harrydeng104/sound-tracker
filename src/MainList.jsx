@@ -33,9 +33,9 @@ function MainList({ songs, onUncomp }) {
                             onClick = {e => {
                                 e.stopPropagation()
                                 onUncomp(song)
-                                if (selectedIndex === index) {
-                                    setSelectedIndex(null)
-                                }
+                                // if (selectedIndex === index) {
+                                //     setSelectedIndex(null)
+                                // }
                             }}
                         >
                             🗑️
