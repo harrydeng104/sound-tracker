@@ -20,7 +20,11 @@ jobs:
 
     - run: npm ci
 
-    - run: npm run build --if-present
+    - name: Build with environment variables
+      run: npm run build --if-present
+      env:
+        VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
+        VITE_CLIENT_SECRET: ${{ secrets.VITE_CLIENT_SECRET }}
 
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3

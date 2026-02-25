@@ -54,25 +54,17 @@ function App() {
     }
 
     function handleUncompleteSong(uncompSong) {
-        // const moveBack = window.confirm("Are you sure you want to move this song back to the queue?")
+        const moveBack = window.confirm("Are you sure you want to move this song back to the queue?")
 
-        // if (moveBack) {
-        //     setSongs(s => 
-        //         s.map(song => 
-        //             song.id === uncompSong.id 
-        //                 ? { ...song, completed: false } 
-        //                 : song
-        //         )
-        //     )
-        // }
-
-        setSongs(s => 
-            s.map(song => 
-                song.id === uncompSong.id 
-                    ? { ...song, completed: false } 
-                    : song
+        if (moveBack) {
+            setSongs(s => 
+                s.map(song => 
+                    song.id === uncompSong.id 
+                        ? { ...song, completed: false } 
+                        : song
+                )
             )
-        )
+        }
     }
 
     return (
