@@ -14,6 +14,8 @@ function App() {
     const queueSongs = songs.filter(sng => sng.completed !== true)
     const compSongs = songs.filter(sng => sng.completed === true)
 
+    compSongs.sort((a, b) => a.totalScore - b.totalScore)
+
     function handleSongsLoaded(loadedSongs) {
         setSongs(existing => {
             const existingIds = new Set(existing.map(s => s.id))
