@@ -24,7 +24,7 @@ function SongForm({ song, onChange, onComplete }) {
         }
 
         if (value < 0 || value > 10) {
-            alert("Please enter a number between 0 and 10")
+            window.alert("Please enter a number between 0 and 10")
             setValue(null)
             return
         }
