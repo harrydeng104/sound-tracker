@@ -18,12 +18,12 @@ function SongForm({ song, onChange, onComplete }) {
     }, [song])
 
     function validateAndSetScore(setValue, value, currentValue) {
-        if (value === '' || isNaN(value)) {
+        if (value === '') {
             setValue(null)
             return
         }
 
-        if (value < 0 || value > 10) {
+        if (value < 0 || value > 10 || isNaN(value)) {
             window.alert("Please enter a number between 0 and 10")
             setValue(null)
             return
