@@ -17,6 +17,21 @@ function SongForm({ song, onChange, onComplete }) {
         setTotalScore(null)
     }, [song])
 
+    function validateAndSetScore(setValue, value, currentValue) {
+        if (value === '' || isNaN(value)) {
+            setValue(null)
+            return
+        }
+
+        if (value < 0 || value > 10) {
+            alert("Please enter a number between 0 and 10")
+            setValue(null)
+            return
+        }
+
+        setValue(value)
+    }
+
     function handleSaveComponents() {
         if ([vocalScore, backgroundScore, lyricScore, cohesionScore, flowScore].some(v => v == null || isNaN(v))) {
             return
@@ -61,7 +76,7 @@ function SongForm({ song, onChange, onComplete }) {
                     max = "10"
                     placeholder = "Vocals"
                     value = {vocalScore ?? ''}
-                    onChange = {e => setVocalScore(e.target.valueAsNumber)}
+                    onChange = {e => validateAndSetScore(setVocalScore, e.target.valueAsNumber)}
                 />
             </div>
             
@@ -73,7 +88,7 @@ function SongForm({ song, onChange, onComplete }) {
                     max = "10"
                     placeholder = "Background"
                     value = {backgroundScore ?? ''}
-                    onChange = {e => setBackgroundScore(e.target.valueAsNumber)}
+                    onChange = {e => validateAndSetScore(setBackgroundScore, e.target.valueAsNumber)}
                 />
             </div>
             
@@ -85,7 +100,7 @@ function SongForm({ song, onChange, onComplete }) {
                     max = "10"
                     placeholder = "Lyrics"
                     value = {lyricScore ?? ''}
-                    onChange = {e => setLyricScore(e.target.valueAsNumber)}
+                    onChange = {e => validateAndSetScore(setLyricScore, e.target.valueAsNumber)}
                 />
             </div>
 
@@ -97,7 +112,7 @@ function SongForm({ song, onChange, onComplete }) {
                     max = "10"
                     placeholder = "Cohesion"
                     value = {cohesionScore ?? ''}
-                    onChange = {e => setCohesionScore(e.target.valueAsNumber)}
+                    onChange = {e => validateAndSetScore(setCohesionScore, e.target.valueAsNumber)}
                 />
             </div>
             
@@ -109,7 +124,7 @@ function SongForm({ song, onChange, onComplete }) {
                     max = "10"
                     placeholder = "Flow"
                     value = {flowScore ?? ''}
-                    onChange = {e => setFlowScore(e.target.valueAsNumber)}
+                    onChange = {e => validateAndSetScore(setFlowScore, e.target.valueAsNumber)}
                 />
             </div>
 
