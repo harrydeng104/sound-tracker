@@ -70,25 +70,26 @@ function SongList({ onSongsLoaded, onSelectSong, selectedIndex, songs }) {
                     nextUrl = fullResponse.next
                 }
                 
-                const mapItems = allItems.filter(item => item.track != null)
-                mapItems.map(item => {
-                    const song = item.track
+                const mapItems = allItems
+                    .filter(item => item.track != null)
+                    .map(item => {
+                        const song = item.track
 
-                    return {
-                        name: song.name,
-                        artists: song.artists.map(a => a.name).join(', '),
-                        albumArt: song.album.images[0]?.url,
-                        id: song.id,
-                        
-                        vocalScore: null,
-                        backgroundScore: null, 
-                        lyricScore: null, 
-                        cohesionScore: null,
-                        flowScore: null, 
-                        totalScore: null,
-                        completed: false,
-                    }
-                })
+                        return {
+                            name: song.name,
+                            artists: song.artists.map(a => a.name).join(', '),
+                            albumArt: song.album.images[0]?.url,
+                            id: song.id,
+                            
+                            vocalScore: null,
+                            backgroundScore: null, 
+                            lyricScore: null, 
+                            cohesionScore: null,
+                            flowScore: null, 
+                            totalScore: null,
+                            completed: false,
+                        }
+                    })
 
                 onSongsLoaded(mapItems)
             }
