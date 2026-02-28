@@ -69,8 +69,9 @@ function SongList({ onSongsLoaded, onSelectSong, selectedIndex, songs }) {
                     allItems.push(...fullResponse.items)
                     nextUrl = fullResponse.next
                 }
-
-                const mapItems = allItems.map(item => {
+                
+                const mapItems = allItems.filter(item => item.track != null)
+                mapItems.map(item => {
                     const song = item.track
 
                     return {
