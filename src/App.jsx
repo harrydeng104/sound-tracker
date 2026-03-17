@@ -4,6 +4,10 @@ import SongList from './SongList.jsx'
 import SongForm from './SongForm.jsx'
 import MainList from './MainList.jsx'
 
+import { collection, getDocs, doc, setDoc } from 'firebase/firestore'
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
+import { db, auth } from './firebase'
+
 function App() {
     const [tab, setTab] = useState('rankPage')
 
@@ -11,10 +15,21 @@ function App() {
     const [selectedIndex, setSelectedIndex] = useState(null)
     // const [completedSongs, setCompletedSongs] = useState([])
 
+    const [user, setUser] = useState(null)
+
     const queueSongs = songs.filter(sng => sng.completed !== true)
     const compSongs = songs.filter(sng => sng.completed === true)
 
     compSongs.sort((a, b) => b.totalScore - a.totalScore)
+
+    useEffect(() => {
+        const loadSongs = async () => {
+            const querySnapshot = await getDocs(collection(db, 'songs'))
+            const loadedSongs = querySnapshot.docs.map(doc => doc.data())
+            setSongs(loadedSongs)
+        }
+        loadSongs()
+    }, [])
 
     function handleSongsLoaded(loadedSongs) {
         setSongs(existing => {
@@ -23,6 +38,11 @@ function App() {
             const combined = [...existing, ...newSongs]
             const incompleteCount = combined.filter(s => !s.completed).length
             setSelectedIndex(incompleteCount > 0 ? 0 : null)
+
+            newSongs.forEach(song => {
+                setDoc(doc(db, 'songs', song.id), song)
+            })
+
             return combined
         })
     }
@@ -36,22 +56,29 @@ function App() {
         if (targetSong == null) return
         
         setSongs(s =>
-            s.map(song =>
-                song.id === targetSong.id ? { ...song, [field]: value } : song
-            )
+            s.map(song => {
+                if (song.id === targetSong.id) {
+                    const updated = { ...song, [field]: value }
+                    setDoc(doc(db, 'songs', song.id), updated)
+                    return updated
+                }
+                return song
+            })
         )
     }
     
     const selectedSong = queueSongs[selectedIndex] ?? null
     
     function handleCompleteSong(compSong) {
+        const updated = { ...compSong, completed: true }
+        
         setSongs(s => 
             s.map(song => 
-                song.id === compSong.id 
-                    ? { ...compSong, completed: true }
-                    : song
+                song.id === compSong.id ? updated : song
             )
         )
+        
+        setDoc(doc(db, 'songs', compSong.id), updated)
         setSelectedIndex(0)
     }
 
@@ -59,15 +86,26 @@ function App() {
         const moveBack = window.confirm("Are you sure you want to move this song back to the queue?")
 
         if (moveBack) {
+            const updated = { ...uncompSong, completed: false }
+            
             setSongs(s => 
                 s.map(song => 
-                    song.id === uncompSong.id 
-                        ? { ...song, completed: false } 
-                        : song
+                    song.id === uncompSong.id ? updated : song
                 )
             )
+            
+            setDoc(doc(db, 'songs', uncompSong.id), updated)
         }
     }
+
+    async function handleLogin() {
+        const provider = new GoogleAuthProvider()
+        const result = await signInWithPopup(auth, provider)
+        setUser(result.user)
+        console.log('Your Firebase UID:', result.user.uid)
+    }
+
+
 
     return (
         <div className = "app-body">
@@ -93,23 +131,30 @@ function App() {
 
             <main>
                 {tab === 'rankPage' ? (
-                    <div className = "rank-page">
-                        <aside>
-                            <SongList 
-                                onSongsLoaded = {handleSongsLoaded} 
-                                onSelectSong = {handleSelectSong} 
-                                selectedIndex = {selectedIndex}
-                                songs = {queueSongs}
-                            />
-                        </aside>
-                        <section>
-                            <SongForm 
-                                song = {selectedSong}
-                                onChange = {handleValueChange}
-                                onComplete = {handleCompleteSong}
-                            />
-                        </section>
-                    </div>
+                    user ? (
+                        <div className = "rank-page">
+                            <aside>
+                                <SongList 
+                                    onSongsLoaded = {handleSongsLoaded} 
+                                    onSelectSong = {handleSelectSong} 
+                                    selectedIndex = {selectedIndex}
+                                    songs = {queueSongs}
+                                />
+                            </aside>
+                            <section>
+                                <SongForm 
+                                    song = {selectedSong}
+                                    onChange = {handleValueChange}
+                                    onComplete = {handleCompleteSong}
+                                />
+                            </section>
+                        </div>
+                    ) : (
+                        <div style={{ padding: '40px', textAlign: 'center' }}>
+                            <h2>Login Required</h2>
+                            <button onClick={handleLogin}>Login with Google</button>
+                        </div>
+                    )
                 ) : (
                     <MainList 
                         songs = {compSongs} 
