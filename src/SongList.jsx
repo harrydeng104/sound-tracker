@@ -76,10 +76,14 @@ function SongList({ onSongsLoaded, onSelectSong, selectedIndex, songs }) {
                         const song = item.track
 
                         return {
+                            id: song.id,
                             name: song.name,
                             artists: song.artists.map(a => a.name).join(', '),
+                            album: song.album.name,
                             albumArt: song.album.images[0]?.url,
-                            id: song.id,
+                            releaseDate: song.album.release_date,
+                            durationMs: song.duration_ms,
+                            externalUrls: song.external_urls.spotify,
                             
                             vocalScore: null,
                             backgroundScore: null, 
@@ -87,6 +91,8 @@ function SongList({ onSongsLoaded, onSelectSong, selectedIndex, songs }) {
                             cohesionScore: null,
                             flowScore: null, 
                             totalScore: null,
+                            comments: '',
+
                             completed: false,
                         }
                     })
