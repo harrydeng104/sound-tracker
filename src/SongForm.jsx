@@ -7,6 +7,7 @@ function SongForm({ song, onChange, onComplete }) {
     const [cohesionScore, setCohesionScore] = useState(null)
     const [flowScore, setFlowScore] = useState(null)
     const [totalScore, setTotalScore] = useState(null)
+    const [comments, setComments] = useState('')
 
     useEffect(() => {
         setVocalScore(null)
@@ -15,6 +16,7 @@ function SongForm({ song, onChange, onComplete }) {
         setCohesionScore(null)
         setFlowScore(null)
         setTotalScore(null)
+        setComments('')
     }, [song])
 
     function validateAndSetScore(setValue, value) {
@@ -44,7 +46,8 @@ function SongForm({ song, onChange, onComplete }) {
             lyricScore,
             cohesionScore,
             flowScore,
-            totalScore: (vocalScore + backgroundScore + lyricScore + cohesionScore + flowScore) / 5
+            totalScore: (vocalScore + backgroundScore + lyricScore + cohesionScore + flowScore) / 5,
+            comments
         }
 
         onComplete(updatedSong)
@@ -118,6 +121,16 @@ function SongForm({ song, onChange, onComplete }) {
                     placeholder = "Flow"
                     value = {flowScore ?? ''}
                     onChange = {e => validateAndSetScore(setFlowScore, e.target.valueAsNumber)}
+                />
+            </div>
+
+            <h3>Comments</h3>
+            <div className = "comments">
+                <textarea
+                    placeholder = "Optional comments..."
+                    value = {comments}
+                    onChange = {e => setComments(e.target.value)}
+                    rows = "3"
                 />
             </div>
 
