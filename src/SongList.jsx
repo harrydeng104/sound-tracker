@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 const clientId = import.meta.env.VITE_CLIENT_ID
 const clientSecret = import.meta.env.VITE_CLIENT_SECRET
 
-function SongList({ onSongsLoaded, onSelectSong, selectedIndex, songs }) {
+function SongList({ onSongsLoaded, onSelectSong, selectedIndex, songs, onDelete }) {
     const [newId, setNewId] = useState("")
     const [playlistId, setPlaylistId] = useState("") 
     const [reload, forceReload] = useState(0)
@@ -27,15 +27,8 @@ function SongList({ onSongsLoaded, onSelectSong, selectedIndex, songs }) {
     }
 
     function deleteSong(index) {
-        const updatedSongs = songs.filter((_, i) => i !== index)
-        onSongsLoaded(updatedSongs)
-
-        if (selectedIndex === index) {
-            onSelectSong(updatedSongs.length > 0 ? 0 : null)
-        }
-        else if (selectedIndex > index) {
-            onSelectSong(selectedIndex - 1)
-        }
+        const songToDelete = songs[index] 
+        onDelete(songToDelete.id)
     }
 
     useEffect(() => {

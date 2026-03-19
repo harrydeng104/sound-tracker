@@ -4,7 +4,7 @@ import SongList from './SongList.jsx'
 import SongForm from './SongForm.jsx'
 import MainList from './MainList.jsx'
 
-import { collection, getDocs, doc, setDoc } from 'firebase/firestore'
+import { collection, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore'
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
 import { db, auth } from './firebase'
 
@@ -97,6 +97,15 @@ function App() {
         }
     }
 
+    async function handleDeleteSong(songId) {
+        await deleteDoc(doc(db, 'songs', songId))
+        
+        setSongs(s => s.filter(song => song.id !== songId))
+        
+        const remainingQueue = songs.filter(s => s.id !== songId && !s.completed)
+        setSelectedIndex(remainingQueue.length > 0 ? 0 : null)
+    }
+
     async function handleLogin() {
         const provider = new GoogleAuthProvider()
         const result = await signInWithPopup(auth, provider)
@@ -136,6 +145,7 @@ function App() {
                                 <SongList 
                                     onSongsLoaded = {handleSongsLoaded} 
                                     onSelectSong = {handleSelectSong} 
+                                    onDelete = {handleDeleteSong}
                                     selectedIndex = {selectedIndex}
                                     songs = {queueSongs}
                                 />
