@@ -70,7 +70,6 @@ function SongForm({ song, onChange, onComplete }) {
                     type = "number"
                     min = "0"
                     max = "10"
-                    placeholder = "Vocals"
                     value = {vocalScore ?? ''}
                     onChange = {e => validateAndSetScore(setVocalScore, e.target.valueAsNumber)}
                 />
@@ -82,7 +81,6 @@ function SongForm({ song, onChange, onComplete }) {
                     type = "number"
                     min = "0"
                     max = "10"
-                    placeholder = "Background"
                     value = {backgroundScore ?? ''}
                     onChange = {e => validateAndSetScore(setBackgroundScore, e.target.valueAsNumber)}
                 />
@@ -94,7 +92,6 @@ function SongForm({ song, onChange, onComplete }) {
                     type = "number"
                     min = "0"
                     max = "10"
-                    placeholder = "Lyrics"
                     value = {lyricScore ?? ''}
                     onChange = {e => validateAndSetScore(setLyricScore, e.target.valueAsNumber)}
                 />
@@ -106,7 +103,6 @@ function SongForm({ song, onChange, onComplete }) {
                     type = "number"
                     min = "0"
                     max = "10"
-                    placeholder = "Cohesion"
                     value = {cohesionScore ?? ''}
                     onChange = {e => validateAndSetScore(setCohesionScore, e.target.valueAsNumber)}
                 />
@@ -118,7 +114,6 @@ function SongForm({ song, onChange, onComplete }) {
                     type = "number"
                     min = "0"
                     max = "10"
-                    placeholder = "Flow"
                     value = {flowScore ?? ''}
                     onChange = {e => validateAndSetScore(setFlowScore, e.target.valueAsNumber)}
                 />
@@ -127,7 +122,6 @@ function SongForm({ song, onChange, onComplete }) {
             <h3>Comments</h3>
             <div className = "comments">
                 <textarea
-                    placeholder = "Optional comments..."
                     value = {comments}
                     onChange = {e => setComments(e.target.value)}
                     rows = "3"
