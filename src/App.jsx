@@ -30,6 +30,12 @@ function App() {
         loadSongs()
     }, [])
 
+    useEffect(() => {
+        if (selectedIndex === null && queueSongs.length > 0) {
+            setSelectedIndex(0)
+        }
+    }, [songs])
+
     function handleSongsLoaded(loadedSongs) {
         setSongs(existing => {
             const existingIds = new Set(existing.map(s => s.id))
