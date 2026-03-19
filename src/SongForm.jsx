@@ -47,13 +47,6 @@ function SongForm({ song, onChange, onComplete }) {
             totalScore: (vocalScore + backgroundScore + lyricScore + cohesionScore + flowScore) / 5
         }
 
-        onChange('vocalScore',      vocalScore)
-        onChange('backgroundScore', backgroundScore)
-        onChange('lyricScore',      lyricScore)
-        onChange('cohesionScore',   cohesionScore)
-        onChange('flowScore',       flowScore)
-        onChange('totalScore',      updatedSong.totalScore)
-
         onComplete(updatedSong)
     }
 

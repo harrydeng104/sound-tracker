@@ -13,7 +13,6 @@ function App() {
 
     const [songs, setSongs] = useState([])
     const [selectedIndex, setSelectedIndex] = useState(null)
-    // const [completedSongs, setCompletedSongs] = useState([])
 
     const [user, setUser] = useState(null)
 
@@ -144,7 +143,6 @@ function App() {
                             <section>
                                 <SongForm 
                                     song = {selectedSong}
-                                    onChange = {handleValueChange}
                                     onComplete = {handleCompleteSong}
                                 />
                             </section>
