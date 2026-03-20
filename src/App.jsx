@@ -120,65 +120,41 @@ function App() {
     }
 
     return (
-        <div className = "app-body">
-            <header>
-                <h1>SoundTracker</h1>
-            </header>
-
+        <main>
             {user ? (
-                <>
-                    <nav className = "navbar">
-                        <button 
-                            className = {tab === "rankPage" ? "activeTab" : "tab"}
-                            onClick={() => setTab('rankPage')}
-                        >
-                            Ranker
-                        </button>
-                        <button 
-                            className = {tab === "mainList" ? "activeTab" : "tab"}
-                            onClick={() => setTab('mainList')}
-                        >
-                            Main List
-                        </button>
-                    </nav>
-
-                    <main>
-                        {tab === 'rankPage' ? (
-                            <div className = "rank-page">
-                                <aside>
-                                    <SongList 
-                                        onSongsLoaded = {handleSongsLoaded} 
-                                        onSelectSong = {handleSelectSong} 
-                                        onDelete = {handleDeleteSong}
-                                        selectedIndex = {selectedIndex}
-                                        songs = {queueSongs}
-                                    />
-                                </aside>
-                                <section>
-                                    <SongForm 
-                                        song = {selectedSong}
-                                        onComplete = {handleCompleteSong}
-                                    />
-                                </section>
-                            </div>
-                        ) : (
-                            <MainList 
-                                songs = {compSongs} 
-                                onUncomp = {handleUncompleteSong}
-                            />
-                        )}
-                    </main>
-                </>
+                <div className="triple-panel">
+                    <aside className="queue-panel">
+                        <SongList 
+                            onSongsLoaded = {handleSongsLoaded} 
+                            onSelectSong = {handleSelectSong} 
+                            onDelete = {handleDeleteSong}
+                            selectedIndex = {selectedIndex}
+                            songs = {queueSongs}
+                        />
+                    </aside>
+                    
+                    <section className="form-panel">
+                        <SongForm 
+                            song = {selectedSong}
+                            onComplete = {handleCompleteSong}
+                        />
+                    </section>
+                    
+                    <aside className="completed-panel">
+                        <MainList 
+                            songs = {compSongs} 
+                            onUncomp = {handleUncompleteSong}
+                        />
+                    </aside>
+                </div>
             ) : (
-                <main>
-                    <div style={{ padding: '40px', textAlign: 'center' }}>
-                        <h2>Login Required</h2>
-                        <p>Please login to access SoundTracker</p>
-                        <button onClick={handleLogin}>Login with Google</button>
-                    </div>
-                </main>
+                <div style={{ padding: '40px', textAlign: 'center' }}>
+                    <h2>Login Required</h2>
+                    <p>Please login to access SoundTracker</p>
+                    <button onClick={handleLogin}>Login with Google</button>
+                </div>
             )}
-        </div>
+        </main>
     )
 }
 
