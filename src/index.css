@@ -13,16 +13,6 @@ header {
     padding: 10px;
 }
 
-aside {
-    width: 40%;
-    float: right;
-}
-
-section {
-    width: 60%;
-    float: left;
-}
-
 .song-list {
     text-align: center;
     border: 1px solid black;
@@ -65,11 +55,6 @@ li {
 li:hover {
     border-color: greenyellow;
 }
-
-/* .rank-page {
-    display: flex;
-    flex-direction: row-reverse;
-} */
 
 .selected-song {
     border-color: palevioletred;
