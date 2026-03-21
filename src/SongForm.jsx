@@ -10,13 +10,21 @@ function SongForm({ song, onChange, onComplete }) {
     const [comments, setComments] = useState('')
 
     useEffect(() => {
-        setVocalScore(null)
-        setBackgroundScore(null)
-        setLyricScore(null)
-        setCohesionScore(null)
-        setFlowScore(null)
-        setTotalScore(null)
-        setComments('')
+        if (song) {
+            setVocalScore(song.vocalScore ?? null)
+            setBackgroundScore(song.backgroundScore ?? null)
+            setLyricScore(song.lyricScore ?? null)
+            setCohesionScore(song.cohesionScore ?? null)
+            setFlowScore(song.flowScore ?? null)
+            setComments(song.comments ?? '')
+        } else {
+            setVocalScore(null)
+            setBackgroundScore(null)
+            setLyricScore(null)
+            setCohesionScore(null)
+            setFlowScore(null)
+            setComments('')
+        }
     }, [song])
 
     function validateAndSetScore(setValue, value) {
