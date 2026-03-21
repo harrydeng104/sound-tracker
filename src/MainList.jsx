@@ -1,26 +1,21 @@
-import { useState, useEffect } from 'react'
-import SongStats from './SongStats.jsx'
-
-function MainList({ songs, onUncomp }) {
-    const [selectedIndex, setSelectedIndex] = useState(null)
-
+function MainList({ songs, onUncomp, onSelectSong, selectedSongId }) {
     if (songs == null || songs.length === 0) {
-        return (<>
-            <div className = "song-stats">
+        return (
+            <div className = "main-list">
                 <h1>No completed songs</h1>
             </div>
-        </>)
+        )
     }
 
     return (<>
         <div className = "main-list">
             <h1>Completed Songs</h1>
             <ul>
-                {songs.map((song, index) => 
+                {songs.map((song) => 
                     <li 
                         key = {song.id}
-                        className = {index === selectedIndex ? 'selected-song' : 'song-item'} 
-                        onClick = {() => setSelectedIndex(index)}
+                        className = {song.id === selectedSongId ? 'selected-song' : 'song-item'} 
+                        onClick = {() => onSelectSong(song)}
                     >
                         {song.albumArt != null && (<img className = "song-image" src = {song.albumArt} />)}
                         <div className = "song-info">
@@ -33,9 +28,6 @@ function MainList({ songs, onUncomp }) {
                             onClick = {e => {
                                 e.stopPropagation()
                                 onUncomp(song)
-                                if (selectedIndex === index) {
-                                    setSelectedIndex(null)
-                                }
                             }}
                         >
                             🗑️
@@ -43,14 +35,6 @@ function MainList({ songs, onUncomp }) {
                     </li>
                 )}
             </ul>
-        </div>
-        <div className = "song-stats">
-            {selectedIndex !== null && (
-                <SongStats
-                song = {songs[selectedIndex]}
-                onClose = {() => setSelectedIndex(null)}
-                />
-            )}
         </div>
     </>)
 }

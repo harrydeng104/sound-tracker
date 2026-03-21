@@ -9,10 +9,8 @@ import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
 import { db, auth } from './firebase'
 
 function App() {
-    const [tab, setTab] = useState('rankPage')
-
     const [songs, setSongs] = useState([])
-    const [selectedIndex, setSelectedIndex] = useState(null)
+    const [selectedSongId, setSelectedSongId] = useState(null)
 
     const [user, setUser] = useState(null)
 
@@ -31,8 +29,8 @@ function App() {
     }, [])
 
     useEffect(() => {
-        if (selectedIndex === null && queueSongs.length > 0) {
-            setSelectedIndex(0)
+        if (selectedSongId === null && queueSongs.length > 0) {
+            setSelectedSongId(queueSongs[0].id)
         }
     }, [songs])
 
@@ -42,7 +40,7 @@ function App() {
             const newSongs = loadedSongs.filter(song => !existingIds.has(song.id))
             const combined = [...existing, ...newSongs]
             const incompleteCount = combined.filter(s => !s.completed).length
-            setSelectedIndex(incompleteCount > 0 ? 0 : null)
+            setSelectedSongId(incompleteCount > 0 ? combined.filter(s => !s.completed)[0].id : null)
 
             newSongs.forEach(song => {
                 setDoc(doc(db, 'songs', song.id), song)
@@ -52,27 +50,11 @@ function App() {
         })
     }
 
-    function handleSelectSong(index) {
-        setSelectedIndex(index)
-    }
-
-    function handleValueChange(field, value) {
-        const targetSong = queueSongs[selectedIndex]
-        if (targetSong == null) return
-        
-        setSongs(s =>
-            s.map(song => {
-                if (song.id === targetSong.id) {
-                    const updated = { ...song, [field]: value }
-                    setDoc(doc(db, 'songs', song.id), updated)
-                    return updated
-                }
-                return song
-            })
-        )
+    function handleSelectSong(song) {
+        setSelectedSongId(song.id)
     }
     
-    const selectedSong = queueSongs[selectedIndex] ?? null
+    const selectedSong = songs.find(s => s.id === selectedSongId) ?? null
     
     function handleCompleteSong(compSong) {
         const updated = { ...compSong, completed: true }
@@ -84,7 +66,13 @@ function App() {
         )
         
         setDoc(doc(db, 'songs', compSong.id), updated)
-        setSelectedIndex(0)
+        
+        const remainingQueue = queueSongs.filter(s => s.id !== compSong.id)
+        if (remainingQueue.length > 0) {
+            setSelectedSongId(remainingQueue[0].id)
+        } else {
+            setSelectedSongId(null)
+        }
     }
 
     function handleUncompleteSong(uncompSong) {
@@ -109,7 +97,7 @@ function App() {
         setSongs(s => s.filter(song => song.id !== songId))
         
         const remainingQueue = songs.filter(s => s.id !== songId && !s.completed)
-        setSelectedIndex(remainingQueue.length > 0 ? 0 : null)
+        setSelectedSongId(remainingQueue.length > 0 ? remainingQueue[0].id : null)
     }
 
     async function handleLogin() {
@@ -120,41 +108,49 @@ function App() {
     }
 
     return (
-        <main>
-            {user ? (
-                <div className="triple-panel">
-                    <aside className="queue-panel">
-                        <SongList 
-                            onSongsLoaded = {handleSongsLoaded} 
-                            onSelectSong = {handleSelectSong} 
-                            onDelete = {handleDeleteSong}
-                            selectedIndex = {selectedIndex}
-                            songs = {queueSongs}
-                        />
-                    </aside>
-                    
-                    <section className="form-panel">
-                        <SongForm 
-                            song = {selectedSong}
-                            onComplete = {handleCompleteSong}
-                        />
-                    </section>
-                    
-                    <aside className="completed-panel">
-                        <MainList 
-                            songs = {compSongs} 
-                            onUncomp = {handleUncompleteSong}
-                        />
-                    </aside>
-                </div>
-            ) : (
-                <div style={{ padding: '40px', textAlign: 'center' }}>
-                    <h2>Login Required</h2>
-                    <p>Please login to access SoundTracker</p>
-                    <button onClick={handleLogin}>Login with Google</button>
-                </div>
-            )}
-        </main>
+        <div className="app-body">
+            <header>
+                <h1>SoundTracker</h1>
+            </header>
+            
+            <main>
+                {user ? (
+                    <div className="triple-panel">
+                        <aside className="queue-panel">
+                            <SongList 
+                                onSongsLoaded = {handleSongsLoaded} 
+                                onSelectSong = {handleSelectSong}
+                                onDelete = {handleDeleteSong}
+                                selectedSongId = {selectedSongId}
+                                songs = {queueSongs}
+                            />
+                        </aside>
+                        
+                        <section className="form-panel">
+                            <SongForm 
+                                song = {selectedSong}
+                                onComplete = {handleCompleteSong}
+                            />
+                        </section>
+                        
+                        <aside className="completed-panel">
+                            <MainList 
+                                songs = {compSongs} 
+                                onUncomp = {handleUncompleteSong}
+                                onSelectSong = {handleSelectSong}
+                                selectedSongId = {selectedSongId}
+                            />
+                        </aside>
+                    </div>
+                ) : (
+                    <div style={{ padding: '40px', textAlign: 'center' }}>
+                        <h2>Login Required</h2>
+                        <p>Please login to access SoundTracker</p>
+                        <button onClick={handleLogin}>Login with Google</button>
+                    </div>
+                )}
+            </main>
+        </div>
     )
 }
 

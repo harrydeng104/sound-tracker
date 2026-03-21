@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 const clientId = import.meta.env.VITE_CLIENT_ID
 const clientSecret = import.meta.env.VITE_CLIENT_SECRET
 
-function SongList({ onSongsLoaded, onSelectSong, selectedIndex, songs, onDelete }) {
+function SongList({ onSongsLoaded, onSelectSong, onDelete, selectedSongId, songs }) {
     const [newId, setNewId] = useState("")
     const [playlistId, setPlaylistId] = useState("") 
     const [reload, forceReload] = useState(0)
@@ -101,7 +101,6 @@ function SongList({ onSongsLoaded, onSelectSong, selectedIndex, songs, onDelete 
     }, [playlistId, reload])
 
     return (<>
-
         <div className = "song-list">
             <h1>Songs</h1>
                 <div> 
@@ -123,8 +122,8 @@ function SongList({ onSongsLoaded, onSelectSong, selectedIndex, songs, onDelete 
                 {songs.map((song, index) => 
                     <li 
                         key = {song.id}
-                        className = {index === selectedIndex ? 'selected-song' : 'song-item'} 
-                        onClick = {() => onSelectSong(index)}
+                        className = {song.id === selectedSongId ? 'selected-song' : 'song-item'} 
+                        onClick = {() => onSelectSong(song)}
                     >
                         {song.albumArt != null && (<img className = "song-image" src = {song.albumArt} />)}
                         <div className = "song-info">
