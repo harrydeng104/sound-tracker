@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 function SongForm({ song, onChange, onComplete }) {
     const [vocalScore, setVocalScore] = useState(null)
@@ -9,6 +9,8 @@ function SongForm({ song, onChange, onComplete }) {
     const [totalScore, setTotalScore] = useState(null)
     const [comments, setComments] = useState('')
 
+    const vocalInputRef = useRef(null)
+
     useEffect(() => {
         if (song) {
             setVocalScore(song.vocalScore ?? null)
@@ -17,6 +19,10 @@ function SongForm({ song, onChange, onComplete }) {
             setCohesionScore(song.cohesionScore ?? null)
             setFlowScore(song.flowScore ?? null)
             setComments(song.comments ?? '')
+
+            setTimeout(() => {
+                vocalInputRef.current?.focus()
+            }, 0)
         } else {
             setVocalScore(null)
             setBackgroundScore(null)
@@ -75,6 +81,7 @@ function SongForm({ song, onChange, onComplete }) {
             <h3>Vocals</h3>
             <div className = "vocal">
                 <input 
+                    ref={vocalInputRef}
                     type = "number"
                     min = "0"
                     max = "10"
