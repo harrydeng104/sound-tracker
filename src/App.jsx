@@ -121,46 +121,50 @@ function App() {
 
     return (
         <div className="app-body">
-            <header>
-                <h1>SoundTracker</h1>
-                    <input 
-                        type="text"
-                        placeholder="Search songs..."
-                        value={searchQuery}
-                        onChange={e => setSearchQuery(e.target.value)}
-                        className="search-box"
-                    />
-            </header>
+
             
             <main>
-                {user ? (
-                    <div className="triple-panel">
-                        <aside className="queue-panel">
-                            <SongList 
-                                onSongsLoaded = {handleSongsLoaded} 
-                                onSelectSong = {handleSelectSong}
-                                onDelete = {handleDeleteSong}
-                                selectedSongId = {selectedSongId}
-                                songs = {filteredQueue}
-                            />
-                        </aside>
-                        
-                        <section className="form-panel">
-                            <SongForm 
-                                song = {selectedSong}
-                                onComplete = {handleCompleteSong}
-                            />
-                        </section>
-                        
-                        <aside className="completed-panel">
-                            <MainList 
-                                songs = {filteredCompleted} 
-                                onUncomp = {handleUncompleteSong}
-                                onSelectSong = {handleSelectSong}
-                                selectedSongId = {selectedSongId}
-                            />
-                        </aside>
-                    </div>
+                {user ? (    
+                    <>        
+                        <header>
+                            <h1>SoundTracker</h1>
+                                <input 
+                                    type="text"
+                                    placeholder="Search songs..."
+                                    value={searchQuery}
+                                    onChange={e => setSearchQuery(e.target.value)}
+                                    className="search-box"
+                                />
+                        </header>
+
+                        <div className="triple-panel">
+                            <aside className="queue-panel">
+                                <SongList 
+                                    onSongsLoaded = {handleSongsLoaded} 
+                                    onSelectSong = {handleSelectSong}
+                                    onDelete = {handleDeleteSong}
+                                    selectedSongId = {selectedSongId}
+                                    songs = {filteredQueue}
+                                />
+                            </aside>
+                            
+                            <section className="form-panel">
+                                <SongForm 
+                                    song = {selectedSong}
+                                    onComplete = {handleCompleteSong}
+                                />
+                            </section>
+                            
+                            <aside className="completed-panel">
+                                <MainList 
+                                    songs = {filteredCompleted} 
+                                    onUncomp = {handleUncompleteSong}
+                                    onSelectSong = {handleSelectSong}
+                                    selectedSongId = {selectedSongId}
+                                />
+                            </aside>
+                        </div>
+                    </>
                 ) : (
                     <div style={{ padding: '40px', textAlign: 'center' }}>
                         <h2>Login Required</h2>
