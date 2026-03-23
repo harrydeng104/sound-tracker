@@ -77,7 +77,11 @@ function SongForm({ song, onChange, onComplete }) {
 
     return (<>
         <div className = "song-form">
-            <h1>{song.name}</h1>
+            <h1>
+                <a href={song.externalUrls} target="_blank" rel="noopener noreferrer">
+                    {song.name}
+                </a>
+            </h1>
             <h3>Vocals</h3>
             <div className = "vocal">
                 <input 
