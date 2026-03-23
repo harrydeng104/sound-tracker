@@ -14,8 +14,20 @@ function App() {
 
     const [user, setUser] = useState(null)
 
+    const [searchQuery, setSearchQuery] = useState('')
+
     const queueSongs = songs.filter(sng => sng.completed !== true)
     const compSongs = songs.filter(sng => sng.completed === true)
+
+    const filteredQueue = queueSongs.filter(song => 
+        song.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        song.artists.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+
+    const filteredCompleted = compSongs.filter(song => 
+        song.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        song.artists.toLowerCase().includes(searchQuery.toLowerCase())
+    )
 
     compSongs.sort((a, b) => b.totalScore - a.totalScore)
 
@@ -67,7 +79,7 @@ function App() {
         
         setDoc(doc(db, 'songs', compSong.id), updated)
         
-        const remainingQueue = queueSongs.filter(s => s.id !== compSong.id)
+        const remainingQueue = songs.filter(s => s.id !== compSong.id && !s.completed)
         if (remainingQueue.length > 0) {
             setSelectedSongId(remainingQueue[0].id)
         } else {
@@ -111,6 +123,13 @@ function App() {
         <div className="app-body">
             <header>
                 <h1>SoundTracker</h1>
+                    <input 
+                        type="text"
+                        placeholder="Search songs..."
+                        value={searchQuery}
+                        onChange={e => setSearchQuery(e.target.value)}
+                        className="search-box"
+                    />
             </header>
             
             <main>
@@ -122,7 +141,7 @@ function App() {
                                 onSelectSong = {handleSelectSong}
                                 onDelete = {handleDeleteSong}
                                 selectedSongId = {selectedSongId}
-                                songs = {queueSongs}
+                                songs = {filteredQueue}
                             />
                         </aside>
                         
@@ -135,7 +154,7 @@ function App() {
                         
                         <aside className="completed-panel">
                             <MainList 
-                                songs = {compSongs} 
+                                songs = {filteredCompleted} 
                                 onUncomp = {handleUncompleteSong}
                                 onSelectSong = {handleSelectSong}
                                 selectedSongId = {selectedSongId}
