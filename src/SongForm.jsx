@@ -76,7 +76,15 @@ function SongForm({ song, onChange, onComplete }) {
     }
 
     return (<>
-        <div className = "song-form">
+        <div 
+            className = "song-form"
+            onKeyDown={e => {
+                if (e.key === 'Enter') {
+                    e.preventDefault()
+                    handleSaveComponents()
+                }
+            }}
+        >
             <h1>
                 <a href={song.externalUrls} target="_blank" rel="noopener noreferrer">
                     {song.name}
