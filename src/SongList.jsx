@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 const clientId = import.meta.env.VITE_CLIENT_ID
 const clientSecret = import.meta.env.VITE_CLIENT_SECRET
 
-function SongList({ onSongsLoaded, onSelectSong, selectedIndex, songs }) {
+function SongList({ onSongsLoaded, onSelectSong, onDelete, selectedSongId, songs }) {
     const [newId, setNewId] = useState("")
     const [playlistId, setPlaylistId] = useState("") 
     const [reload, forceReload] = useState(0)
@@ -27,15 +27,8 @@ function SongList({ onSongsLoaded, onSelectSong, selectedIndex, songs }) {
     }
 
     function deleteSong(index) {
-        const updatedSongs = songs.filter((_, i) => i !== index)
-        onSongsLoaded(updatedSongs)
-
-        if (selectedIndex === index) {
-            onSelectSong(updatedSongs.length > 0 ? 0 : null)
-        }
-        else if (selectedIndex > index) {
-            onSelectSong(selectedIndex - 1)
-        }
+        const songToDelete = songs[index] 
+        onDelete(songToDelete.id)
     }
 
     useEffect(() => {
@@ -76,10 +69,14 @@ function SongList({ onSongsLoaded, onSelectSong, selectedIndex, songs }) {
                         const song = item.track
 
                         return {
+                            id: song.id,
                             name: song.name,
                             artists: song.artists.map(a => a.name).join(', '),
+                            album: song.album.name,
                             albumArt: song.album.images[0]?.url,
-                            id: song.id,
+                            releaseDate: song.album.release_date,
+                            durationMs: song.duration_ms,
+                            externalUrls: song.external_urls.spotify,
                             
                             vocalScore: null,
                             backgroundScore: null, 
@@ -87,6 +84,8 @@ function SongList({ onSongsLoaded, onSelectSong, selectedIndex, songs }) {
                             cohesionScore: null,
                             flowScore: null, 
                             totalScore: null,
+                            comments: '',
+
                             completed: false,
                         }
                     })
@@ -102,7 +101,6 @@ function SongList({ onSongsLoaded, onSelectSong, selectedIndex, songs }) {
     }, [playlistId, reload])
 
     return (<>
-
         <div className = "song-list">
             <h1>Songs</h1>
                 <div> 
@@ -124,8 +122,8 @@ function SongList({ onSongsLoaded, onSelectSong, selectedIndex, songs }) {
                 {songs.map((song, index) => 
                     <li 
                         key = {song.id}
-                        className = {index === selectedIndex ? 'selected-song' : 'song-item'} 
-                        onClick = {() => onSelectSong(index)}
+                        className = {song.id === selectedSongId ? 'selected-song' : 'song-item'} 
+                        onClick = {() => onSelectSong(song)}
                     >
                         {song.albumArt != null && (<img className = "song-image" src = {song.albumArt} />)}
                         <div className = "song-info">

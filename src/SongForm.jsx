@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 function SongForm({ song, onChange, onComplete }) {
     const [vocalScore, setVocalScore] = useState(null)
@@ -7,14 +7,30 @@ function SongForm({ song, onChange, onComplete }) {
     const [cohesionScore, setCohesionScore] = useState(null)
     const [flowScore, setFlowScore] = useState(null)
     const [totalScore, setTotalScore] = useState(null)
+    const [comments, setComments] = useState('')
+
+    const vocalInputRef = useRef(null)
 
     useEffect(() => {
-        setVocalScore(null)
-        setBackgroundScore(null)
-        setLyricScore(null)
-        setCohesionScore(null)
-        setFlowScore(null)
-        setTotalScore(null)
+        if (song) {
+            setVocalScore(song.vocalScore ?? null)
+            setBackgroundScore(song.backgroundScore ?? null)
+            setLyricScore(song.lyricScore ?? null)
+            setCohesionScore(song.cohesionScore ?? null)
+            setFlowScore(song.flowScore ?? null)
+            setComments(song.comments ?? '')
+
+            setTimeout(() => {
+                vocalInputRef.current?.focus()
+            }, 0)
+        } else {
+            setVocalScore(null)
+            setBackgroundScore(null)
+            setLyricScore(null)
+            setCohesionScore(null)
+            setFlowScore(null)
+            setComments('')
+        }
     }, [song])
 
     function validateAndSetScore(setValue, value) {
@@ -44,15 +60,9 @@ function SongForm({ song, onChange, onComplete }) {
             lyricScore,
             cohesionScore,
             flowScore,
-            totalScore: (vocalScore + backgroundScore + lyricScore + cohesionScore + flowScore) / 5
+            totalScore: (vocalScore + backgroundScore + lyricScore + cohesionScore + flowScore) / 5,
+            comments
         }
-
-        onChange('vocalScore',      vocalScore)
-        onChange('backgroundScore', backgroundScore)
-        onChange('lyricScore',      lyricScore)
-        onChange('cohesionScore',   cohesionScore)
-        onChange('flowScore',       flowScore)
-        onChange('totalScore',      updatedSong.totalScore)
 
         onComplete(updatedSong)
     }
@@ -66,15 +76,27 @@ function SongForm({ song, onChange, onComplete }) {
     }
 
     return (<>
-        <div className = "song-form">
-            <h1>{song.name}</h1>
+        <div 
+            className = "song-form"
+            onKeyDown={e => {
+                if (e.key === 'Enter') {
+                    e.preventDefault()
+                    handleSaveComponents()
+                }
+            }}
+        >
+            <h1>
+                <a href={song.externalUrls} target="_blank" rel="noopener noreferrer">
+                    {song.name}
+                </a>
+            </h1>
             <h3>Vocals</h3>
             <div className = "vocal">
                 <input 
+                    ref={vocalInputRef}
                     type = "number"
                     min = "0"
                     max = "10"
-                    placeholder = "Vocals"
                     value = {vocalScore ?? ''}
                     onChange = {e => validateAndSetScore(setVocalScore, e.target.valueAsNumber)}
                 />
@@ -86,7 +108,6 @@ function SongForm({ song, onChange, onComplete }) {
                     type = "number"
                     min = "0"
                     max = "10"
-                    placeholder = "Background"
                     value = {backgroundScore ?? ''}
                     onChange = {e => validateAndSetScore(setBackgroundScore, e.target.valueAsNumber)}
                 />
@@ -98,7 +119,6 @@ function SongForm({ song, onChange, onComplete }) {
                     type = "number"
                     min = "0"
                     max = "10"
-                    placeholder = "Lyrics"
                     value = {lyricScore ?? ''}
                     onChange = {e => validateAndSetScore(setLyricScore, e.target.valueAsNumber)}
                 />
@@ -110,7 +130,6 @@ function SongForm({ song, onChange, onComplete }) {
                     type = "number"
                     min = "0"
                     max = "10"
-                    placeholder = "Cohesion"
                     value = {cohesionScore ?? ''}
                     onChange = {e => validateAndSetScore(setCohesionScore, e.target.valueAsNumber)}
                 />
@@ -122,9 +141,17 @@ function SongForm({ song, onChange, onComplete }) {
                     type = "number"
                     min = "0"
                     max = "10"
-                    placeholder = "Flow"
                     value = {flowScore ?? ''}
                     onChange = {e => validateAndSetScore(setFlowScore, e.target.valueAsNumber)}
+                />
+            </div>
+
+            <h3>Comments</h3>
+            <div className = "comments">
+                <textarea
+                    value = {comments}
+                    onChange = {e => setComments(e.target.value)}
+                    rows = "3"
                 />
             </div>
 
