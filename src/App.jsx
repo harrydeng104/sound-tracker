@@ -4,6 +4,10 @@ import SongList from './SongList.jsx'
 import SongForm from './SongForm.jsx'
 import MainList from './MainList.jsx'
 
+import { collection, getDocs, doc, setDoc } from 'firebase/firestore'
+import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
+import { db, auth } from './firebase'
+
 function App() {
     const [tab, setTab] = useState('rankPage')
 
