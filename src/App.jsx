@@ -127,7 +127,7 @@ function App() {
                 {user ? (    
                     <>        
                         <header>
-                            <h1 className="text-4xl font-bold text-blue-500">SoundTracker</h1>
+                            <h1 className="text-4xl font-bold">SoundTracker</h1>
                                 <input 
                                     type="text"
                                     placeholder="Search songs..."
