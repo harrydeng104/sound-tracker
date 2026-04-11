@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import './App.css'
 import SongList from './SongList.jsx'
 import SongForm from './SongForm.jsx'
 import MainList from './MainList.jsx'
@@ -120,26 +119,23 @@ function App() {
     }
 
     return (
-        <div className="app-body">
-
-            
+        <div className="text-white">
             <main>
                 {user ? (    
                     <>        
-                        <header>
+                        <header className="bg-slate-800 text-center p-2">
                             <h1 className="text-4xl">SoundTracker</h1>
                                 <input 
                                     type="text"
                                     placeholder="Search songs..."
                                     value={searchQuery}
                                     onChange={e => setSearchQuery(e.target.value)}
-                                    className="search-box"
                                 />
                         </header>
 
-                        <div className="triple-panel">
-                            <aside className="queue-panel">
-                                <SongList 
+                        <div className="grid grid-cols-[1fr_1.5fr_1fr]">
+                            <aside className="text-center bg-gray-900 h-[calc(100vh-80px)] overflow-y-auto">
+                                <SongList
                                     onSongsLoaded = {handleSongsLoaded} 
                                     onSelectSong = {handleSelectSong}
                                     onDelete = {handleDeleteSong}
@@ -148,14 +144,14 @@ function App() {
                                 />
                             </aside>
                             
-                            <section className="form-panel">
+                            <section className="text-center bg-black">
                                 <SongForm 
                                     song = {selectedSong}
                                     onComplete = {handleCompleteSong}
                                 />
                             </section>
                             
-                            <aside className="completed-panel">
+                            <aside className="text-center bg-gray-900 h-[calc(100vh-80px)] overflow-y-auto">
                                 <MainList 
                                     songs = {filteredCompleted} 
                                     onUncomp = {handleUncompleteSong}
@@ -166,7 +162,7 @@ function App() {
                         </div>
                     </>
                 ) : (
-                    <div style={{ padding: '40px', textAlign: 'center' }}>
+                    <div className="p-5 text-center">
                         <h2>Login Required</h2>
                         <p>Please login to access SoundTracker</p>
                         <button onClick={handleLogin}>Login with Google</button>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import clsx from 'clsx'
 
 const clientId = import.meta.env.VITE_CLIENT_ID
 const clientSecret = import.meta.env.VITE_CLIENT_SECRET
@@ -101,9 +102,9 @@ function SongList({ onSongsLoaded, onSelectSong, onDelete, selectedSongId, songs
     }, [playlistId, reload])
 
     return (<>
-        <div className = "song-list">
+        <div>
             <h1>Songs</h1>
-                <div> 
+                <div className="border border-white"> 
                     <input 
                         type = "text"
                         placeholder = "Enter playlist link..."
@@ -112,7 +113,6 @@ function SongList({ onSongsLoaded, onSelectSong, onDelete, selectedSongId, songs
                         onKeyDown = {e => { if (e.key === 'Enter') setId() }}
                     />
                     <button 
-                        className = "enter-button"
                         onClick = {setId}
                     >
                         Enter
@@ -122,22 +122,26 @@ function SongList({ onSongsLoaded, onSelectSong, onDelete, selectedSongId, songs
                 {songs.map((song, index) => 
                     <li 
                         key = {song.id}
-                        className = {song.id === selectedSongId ? 'selected-song' : 'song-item'} 
+                        className={clsx(
+                            "p-1 flex items-center hover:bg-gray-700",
+                            {
+                                'border border-white': song.id === selectedSongId
+                            }
+                        )} 
                         onClick = {() => onSelectSong(song)}
                     >
-                        {song.albumArt != null && (<img className = "song-image" src = {song.albumArt} />)}
-                        <div className = "song-info">
-                            <span className = "song-name">{song.name}</span>
-                            <span className = "song-artists">{song.artists}</span>
+                        {song.albumArt != null && (<img className="rounded-[5px] w-10 h-10 mr-1" src = {song.albumArt} />)}
+                        <div className="text-left flex flex-col w-53 whitespace-nowrap overflow-hidden">
+                            <span>{song.name}</span>
+                            <span>{song.artists}</span>
                         </div>
                         <button
-                            className = "delete-button"
+                            className="ml-2 cursor-pointer"
                             onClick = {e => {
                                 e.stopPropagation()
                                 deleteSong(index)
                             }}
                         >
-
                             🗑️
                         </button>
                     </li>

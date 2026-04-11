@@ -69,15 +69,14 @@ function SongForm({ song, onChange, onComplete }) {
 
     if (song == null) {
         return (<>
-            <div className = "song-stats">
+            <div>
                 <h1>No Songs Queued</h1>
             </div>
         </>)
     }
 
     return (<>
-        <div 
-            className = "song-form"
+        <div
             onKeyDown={e => {
                 if (e.key === 'Enter') {
                     e.preventDefault()
@@ -91,7 +90,7 @@ function SongForm({ song, onChange, onComplete }) {
                 </a>
             </h1>
             <h3>Vocals</h3>
-            <div className = "vocal">
+            <div>
                 <input 
                     ref={vocalInputRef}
                     type = "number"
@@ -103,7 +102,7 @@ function SongForm({ song, onChange, onComplete }) {
             </div>
             
             <h3>Background</h3>
-            <div className = "background">
+            <div>
                 <input 
                     type = "number"
                     min = "0"
@@ -114,7 +113,7 @@ function SongForm({ song, onChange, onComplete }) {
             </div>
             
             <h3>Lyrics</h3>
-            <div className = "lyric">
+            <div>
                 <input 
                     type = "number"
                     min = "0"
@@ -125,7 +124,7 @@ function SongForm({ song, onChange, onComplete }) {
             </div>
 
             <h3>Cohesion</h3>
-            <div className = "cohesion">
+            <div>
                 <input 
                     type = "number"
                     min = "0"
@@ -136,7 +135,7 @@ function SongForm({ song, onChange, onComplete }) {
             </div>
             
             <h3>Flow</h3>
-            <div className = "flow">
+            <div>
                 <input 
                     type = "number"
                     min = "0"
@@ -147,7 +146,7 @@ function SongForm({ song, onChange, onComplete }) {
             </div>
 
             <h3>Comments</h3>
-            <div className = "comments">
+            <div>
                 <textarea
                     value = {comments}
                     onChange = {e => setComments(e.target.value)}
@@ -156,7 +155,6 @@ function SongForm({ song, onChange, onComplete }) {
             </div>
 
             <button 
-                className = "save-button"
                 onClick = {handleSaveComponents}
             >
                 Save
