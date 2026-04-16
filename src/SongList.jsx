@@ -107,12 +107,13 @@ function SongList({ onSongsLoaded, onSelectSong, onDelete, selectedSongId, songs
                 <div className="border border-white"> 
                     <input 
                         type = "text"
-                        placeholder = "Enter playlist link..."
+                        placeholder = " Enter playlist link..."
                         value = {newId}
                         onChange = {handleInputChange}
                         onKeyDown = {e => { if (e.key === 'Enter') setId() }}
                     />
                     <button 
+                        className="bg-gray-700 cursor-pointer pr-1 pl-1"
                         onClick = {setId}
                     >
                         Enter
@@ -131,7 +132,7 @@ function SongList({ onSongsLoaded, onSelectSong, onDelete, selectedSongId, songs
                         onClick = {() => onSelectSong(song)}
                     >
                         {song.albumArt != null && (<img className="rounded-[5px] w-10 h-10 mr-1" src = {song.albumArt} />)}
-                        <div className="text-left flex flex-col w-50 whitespace-nowrap overflow-hidden">
+                        <div className="text-left flex flex-col flex-1 whitespace-nowrap overflow-hidden">
                             <span>{song.name}</span>
                             <span>{song.artists}</span>
                         </div>

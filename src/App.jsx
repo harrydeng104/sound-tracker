@@ -16,7 +16,9 @@ function App() {
     const [searchQuery, setSearchQuery] = useState('')
 
     const queueSongs = songs.filter(sng => sng.completed !== true)
-    const compSongs = songs.filter(sng => sng.completed === true)
+    const compSongs = songs
+        .filter(sng => sng.completed === true)
+        .sort((a, b) => b.totalScore - a.totalScore)
 
     const filteredQueue = queueSongs.filter(song => 
         song.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -27,8 +29,6 @@ function App() {
         song.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         song.artists.toLowerCase().includes(searchQuery.toLowerCase())
     )
-
-    compSongs.sort((a, b) => b.totalScore - a.totalScore)
 
     useEffect(() => {
         const loadSongs = async () => {
@@ -119,15 +119,16 @@ function App() {
     }
 
     return (
-        <div className="text-white">
+        <div className="text-white bg-slate-800 h-screen">
             <main>
                 {user ? (    
                     <>        
                         <header className="bg-slate-800 text-center p-2">
-                            <h1 className="text-4xl">SoundTracker</h1>
+                            <h1 className="text-4xl font-bold">SoundTracker</h1>
                                 <input 
+                                    className="border border-white mt-2"
                                     type="text"
-                                    placeholder="Search songs..."
+                                    placeholder=" Search songs..."
                                     value={searchQuery}
                                     onChange={e => setSearchQuery(e.target.value)}
                                 />

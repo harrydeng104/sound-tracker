@@ -84,14 +84,16 @@ function SongForm({ song, onChange, onComplete }) {
                 }
             }}
         >
-            <h1>
+            <h1 className="text-2xl font-semibold">
                 <a href={song.externalUrls} target="_blank" rel="noopener noreferrer">
                     {song.name}
                 </a>
             </h1>
+            <span>{song.artists}</span>
             <h3>Vocals</h3>
             <div>
                 <input 
+                    className="border border-white"
                     ref={vocalInputRef}
                     type = "number"
                     min = "0"
@@ -104,6 +106,7 @@ function SongForm({ song, onChange, onComplete }) {
             <h3>Background</h3>
             <div>
                 <input 
+                    className="border border-white"
                     type = "number"
                     min = "0"
                     max = "10"
@@ -115,6 +118,7 @@ function SongForm({ song, onChange, onComplete }) {
             <h3>Lyrics</h3>
             <div>
                 <input 
+                    className="border border-white"
                     type = "number"
                     min = "0"
                     max = "10"
@@ -126,6 +130,7 @@ function SongForm({ song, onChange, onComplete }) {
             <h3>Cohesion</h3>
             <div>
                 <input 
+                    className="border border-white"
                     type = "number"
                     min = "0"
                     max = "10"
@@ -137,6 +142,7 @@ function SongForm({ song, onChange, onComplete }) {
             <h3>Flow</h3>
             <div>
                 <input 
+                    className="border border-white"
                     type = "number"
                     min = "0"
                     max = "10"
@@ -148,6 +154,7 @@ function SongForm({ song, onChange, onComplete }) {
             <h3>Comments</h3>
             <div>
                 <textarea
+                    className="border border-white"
                     value = {comments}
                     onChange = {e => setComments(e.target.value)}
                     rows = "3"
@@ -155,6 +162,7 @@ function SongForm({ song, onChange, onComplete }) {
             </div>
 
             <button 
+                className="cursor-pointer bg-blue-950 pr-1 pl-1"
                 onClick = {handleSaveComponents}
             >
                 Save
