@@ -84,6 +84,25 @@ function App() {
         } else {
             setSelectedSongId(null)
         }
+
+        const logEntry = {
+            action: compSong.completed ? 'updated' : 'completed',
+            songId: updated.id,
+            songName: updated.name,
+            artists: updated.artists,
+            timestamp: new Date().toISOString(),
+            scores: {
+                vocal: updated.vocalScore,
+                background: updated.backgroundScore,
+                lyric: updated.lyricScore,
+                cohesion: updated.cohesionScore,
+                flow: updated.flowScore,
+                total: updated.totalScore
+            },
+            comments: updated.comments
+        }
+        
+        setDoc(doc(db, 'logs', `${Date.now()}_${updated.id}`), logEntry)
     }
 
     function handleUncompleteSong(uncompSong) {
