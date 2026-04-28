@@ -185,7 +185,7 @@ function App() {
                     <div className="p-5 text-center">
                         <h2>Login Required</h2>
                         <p>Please login to access SoundTracker</p>
-                        <button onClick={handleLogin}>Login with Google</button>
+                        <button className="cursor-pointer" onClick={handleLogin}>Login with Google</button>
                     </div>
                 )}
             </main>
