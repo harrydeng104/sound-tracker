@@ -138,12 +138,12 @@ function App() {
     }
 
     return (
-        <div className="text-white bg-slate-800 h-screen">
+        <div className="text-white bg-slate-800 h-screen flex flex-col overflow-hidden">
             <main>
                 {user ? (    
                     <>        
-                        <header className="bg-slate-800 text-center p-2">
-                            <h1 className="text-4xl font-bold">SoundTracker</h1>
+                        <header className="bg-slate-800 text-center p-2 shrink-0">
+                            <h1 className="text-4xl font-bold text-[#56ebff]">SoundTracker</h1>
                                 <input 
                                     className="border border-white mt-2"
                                     type="text"

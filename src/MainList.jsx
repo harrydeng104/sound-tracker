@@ -11,7 +11,7 @@ function MainList({ songs, onUncomp, onSelectSong, selectedSongId }) {
 
     return (<>
         <div>
-            <h1>Completed Songs</h1>
+            <h1 className='text-xl font-semibold text-[#56ebff]'>Completed Songs</h1>
             <ul>
                 {songs.map((song) => 
                     <li 
@@ -24,12 +24,12 @@ function MainList({ songs, onUncomp, onSelectSong, selectedSongId }) {
                         )} 
                         onClick = {() => onSelectSong(song)}
                     >
-                        {song.albumArt != null && (<img className="rounded-[5px] w-10 h-10 mr-1" src = {song.albumArt} />)}
+                        {song.albumArt != null && (<img className="rounded-[5px] w-10 h-10 mr-2" src = {song.albumArt} />)}
                         <div className="text-left flex flex-col flex-1 whitespace-nowrap overflow-hidden">
                             <span>{song.name}</span>
                             <span>{song.artists}</span>
-                            <span>{song.totalScore}</span>
                         </div>
+                        <span>{song.totalScore.toFixed(1)}</span>
                         <button
                             className="ml-2 cursor-pointer"
                             onClick = {e => {
