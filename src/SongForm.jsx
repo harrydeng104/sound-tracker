@@ -154,10 +154,10 @@ function SongForm({ song, onChange, onComplete }) {
             <h3>Comments</h3>
             <div>
                 <textarea
-                    className="border border-white"
+                    className="border border-white w-2/3"
                     value = {comments}
                     onChange = {e => setComments(e.target.value)}
-                    rows = "3"
+                    rows = "5"
                 />
             </div>
 
