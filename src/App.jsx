@@ -32,7 +32,7 @@ function App() {
 
     useEffect(() => {
         const loadSongs = async () => {
-            const response = await fetch('/data.json')
+            const response = await fetch('./data.json')
             const data = await response.json()
             const loadedSongs = data.songs
             setSongs(loadedSongs)
