@@ -15,7 +15,17 @@ function App() {
 
     const [searchQuery, setSearchQuery] = useState('')
 
-    const queueSongs = songs.filter(sng => sng.completed !== true)
+    function getSortName(name) { //this is needed to make it match spotify alphabetical sorting
+        return name
+            .replace(/^[^\p{L}\p{N}]+/u, '')  // Remove leading punctuation, keep foreign characters
+            .replace(/^(the|a|an)\s+/i, '')
+            .trim()
+    }
+
+    const queueSongs = songs
+        .filter(sng => sng.completed !== true)
+        .sort((a, b) => getSortName(a.name).localeCompare(getSortName(b.name)))
+
     const compSongs = songs
         .filter(sng => sng.completed === true)
         .sort((a, b) => b.totalScore - a.totalScore)
