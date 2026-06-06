@@ -3,7 +3,7 @@ import SongList from './SongList.jsx'
 import SongForm from './SongForm.jsx'
 import MainList from './MainList.jsx'
 
-import { collection, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore'
+import { doc, setDoc, deleteDoc } from 'firebase/firestore'
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
 import { db, auth } from './firebase'
 
@@ -32,8 +32,9 @@ function App() {
 
     useEffect(() => {
         const loadSongs = async () => {
-            const querySnapshot = await getDocs(collection(db, 'songs'))
-            const loadedSongs = querySnapshot.docs.map(doc => doc.data())
+            const response = await fetch('/data.json')
+            const data = await response.json()
+            const loadedSongs = data.songs
             setSongs(loadedSongs)
         }
         loadSongs()
