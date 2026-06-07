@@ -102,24 +102,26 @@ function SongList({ onSongsLoaded, onSelectSong, onDelete, selectedSongId, songs
     }, [playlistId, reload])
 
     return (<>
-        <div>
-            <h1>Songs</h1>
-                <div className="border border-white"> 
-                    <input 
-                        type = "text"
-                        placeholder = " Enter playlist link..."
-                        value = {newId}
-                        onChange = {handleInputChange}
-                        onKeyDown = {e => { if (e.key === 'Enter') setId() }}
-                    />
-                    <button 
-                        className="bg-gray-700 cursor-pointer pr-1 pl-1"
-                        onClick = {setId}
-                    >
-                        Enter
-                    </button>
-                </div>
-            <ul>
+        <div className='flex flex-col h-full'>
+            <h1 className='text-xl font-semibold text-[#56ebff] p-1 shrink-0 border'>Songs</h1>
+
+            <div className="border border-white p-1"> 
+                <input 
+                    type = "text"
+                    placeholder = " Enter playlist link..."
+                    value = {newId}
+                    onChange = {handleInputChange}
+                    onKeyDown = {e => { if (e.key === 'Enter') setId() }}
+                />
+                <button 
+                    className="bg-gray-700 cursor-pointer pr-1 pl-1"
+                    onClick = {setId}
+                >
+                    Enter
+                </button>
+            </div>
+
+            <ul className='overflow-y-auto flex-1'>
                 {songs.map((song, index) => 
                     <li 
                         key = {song.id}

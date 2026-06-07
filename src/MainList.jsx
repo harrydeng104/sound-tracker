@@ -10,9 +10,9 @@ function MainList({ songs, onUncomp, onSelectSong, selectedSongId }) {
     }
 
     return (<>
-        <div>
-            <h1 className='text-xl font-semibold text-[#56ebff]'>Completed Songs</h1>
-            <ul>
+        <div className='flex flex-col h-full'>
+            <h1 className='text-xl font-semibold text-[#56ebff] p-1 shrink-0 border'>Completed Songs</h1>
+            <ul className='overflow-y-auto flex-1'>
                 {songs.map((song) => 
                     <li 
                         key = {song.id}
@@ -31,7 +31,7 @@ function MainList({ songs, onUncomp, onSelectSong, selectedSongId }) {
                         </div>
                         <span>{song.totalScore.toFixed(1)}</span>
                         <button
-                            className="ml-2 cursor-pointer"
+                            className="ml-2 curd-pointer"
                             onClick = {e => {
                                 e.stopPropagation()
                                 onUncomp(song)

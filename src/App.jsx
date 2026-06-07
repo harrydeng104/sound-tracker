@@ -4,7 +4,7 @@ import SongForm from './SongForm.jsx'
 import MainList from './MainList.jsx'
 
 import { doc, setDoc, deleteDoc } from 'firebase/firestore'
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
+import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from 'firebase/auth'
 import { db, auth } from './firebase'
 
 function App() {
@@ -39,6 +39,17 @@ function App() {
         song.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         song.artists.toLowerCase().includes(searchQuery.toLowerCase())
     )
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+            if (firebaseUser && firebaseUser.email === 'justinengineer104@gmail.com') {
+                setUser(firebaseUser)
+            } else {
+                setUser(null)
+            }
+        })
+        return () => unsubscribe()
+    }, [])
 
     useEffect(() => {
         const loadSongs = async () => {
@@ -143,9 +154,7 @@ function App() {
 
     async function handleLogin() {
         const provider = new GoogleAuthProvider()
-        const result = await signInWithPopup(auth, provider)
-        setUser(result.user)
-        console.log('Your Firebase UID:', result.user.uid)
+        await signInWithPopup(auth, provider)
     }
 
     return (
@@ -165,7 +174,7 @@ function App() {
                         </header>
 
                         <div className="grid grid-cols-[1fr_1.5fr_1fr]">
-                            <aside className="text-center bg-gray-900 h-[calc(100vh-80px)] overflow-y-auto">
+                            <aside className="text-center bg-gray-900 h-[calc(100vh-80px)] overflow-hidden">
                                 <SongList
                                     onSongsLoaded = {handleSongsLoaded} 
                                     onSelectSong = {handleSelectSong}
@@ -182,7 +191,7 @@ function App() {
                                 />
                             </section>
                             
-                            <aside className="text-center bg-gray-900 h-[calc(100vh-80px)] overflow-y-auto">
+                            <aside className="text-center bg-gray-900 h-[calc(100vh-80px)] overflow-hidden">
                                 <MainList 
                                     songs = {filteredCompleted} 
                                     onUncomp = {handleUncompleteSong}
