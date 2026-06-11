@@ -3,7 +3,7 @@ import SongList from './SongList.jsx'
 import SongForm from './SongForm.jsx'
 import MainList from './MainList.jsx'
 
-import { doc, setDoc, deleteDoc } from 'firebase/firestore'
+import { doc, setDoc, deleteDoc, getDoc } from 'firebase/firestore'
 import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from 'firebase/auth'
 import { db, auth } from './firebase'
 
@@ -17,11 +17,11 @@ function App() {
 
     function getSortName(name) { //this is needed to make it match spotify alphabetical sorting
         return name
-            .replace(/^[^\p{L}\p{N}]+/u, '')  // Remove leading punctuation, keep foreign characters
+            .replace(/^[^\p{L}\p{N}]+/u, '')
             .replace(/^(the|a|an)\s+/i, '')
             .trim()
-    }
-
+    }    
+    
     const queueSongs = songs
         .filter(sng => sng.completed !== true)
         .sort((a, b) => getSortName(a.name).localeCompare(getSortName(b.name)))
@@ -87,9 +87,26 @@ function App() {
         setSelectedSongId(song.id)
     }
     
-    const selectedSong = songs.find(s => s.id === selectedSongId) ?? null
-    
-    function handleCompleteSong(compSong) {
+    function handleUncompleteSong(uncompSong) {
+        const moveBack = window.confirm("Are you sure you want to move this song back to the queue?")
+
+        if (moveBack) {
+            const updated = { ...uncompSong, completed: false }
+            
+            setSongs(s => 
+                s.map(song => 
+                    song.id === uncompSong.id ? updated : song
+                )
+            )
+            
+            setDoc(doc(db, 'songs', uncompSong.id), updated)
+        }
+    }    
+
+    async function handleCompleteSong(compSong) {
+        const firebaseDoc = await getDoc(doc(db, 'songs', compSong.id))
+        const wasAlreadyCompleted = firebaseDoc.exists() && firebaseDoc.data().completed === true
+
         const updated = { ...compSong, completed: true }
         
         setSongs(s => 
@@ -100,7 +117,7 @@ function App() {
         
         setDoc(doc(db, 'songs', compSong.id), updated)
         
-        const remainingQueue = songs.filter(s => s.id !== compSong.id && !s.completed)
+        const remainingQueue = queueSongs.filter(s => s.id !== compSong.id && !s.completed)
         if (remainingQueue.length > 0) {
             setSelectedSongId(remainingQueue[0].id)
         } else {
@@ -108,7 +125,7 @@ function App() {
         }
 
         const logEntry = {
-            action: compSong.completed ? 'updated' : 'completed',
+            action: wasAlreadyCompleted ? 'updated' : 'completed',
             songId: updated.id,
             songName: updated.name,
             artists: updated.artists,
@@ -127,22 +144,6 @@ function App() {
         setDoc(doc(db, 'logs', `${Date.now()}_${updated.id}`), logEntry)
     }
 
-    function handleUncompleteSong(uncompSong) {
-        const moveBack = window.confirm("Are you sure you want to move this song back to the queue?")
-
-        if (moveBack) {
-            const updated = { ...uncompSong, completed: false }
-            
-            setSongs(s => 
-                s.map(song => 
-                    song.id === uncompSong.id ? updated : song
-                )
-            )
-            
-            setDoc(doc(db, 'songs', uncompSong.id), updated)
-        }
-    }
-
     async function handleDeleteSong(songId) {
         await deleteDoc(doc(db, 'songs', songId))
         
@@ -157,6 +158,8 @@ function App() {
         await signInWithPopup(auth, provider)
     }
 
+    const selectedSong = songs.find(s => s.id === selectedSongId) ?? null
+
     return (
         <div className="text-white bg-slate-800 h-screen flex flex-col overflow-hidden">
             <main>
@@ -170,13 +173,12 @@ function App() {
                                     placeholder=" Search songs..."
                                     value={searchQuery}
                                     onChange={e => setSearchQuery(e.target.value)}
-                                />
-                        </header>
+                                />                        </header>
 
                         <div className="grid grid-cols-[1fr_1.5fr_1fr]">
                             <aside className="text-center bg-gray-900 h-[calc(100vh-80px)] overflow-hidden">
                                 <SongList
-                                    onSongsLoaded = {handleSongsLoaded} 
+                                    onSongsLoaded = {handleSongsLoaded}
                                     onSelectSong = {handleSelectSong}
                                     onDelete = {handleDeleteSong}
                                     selectedSongId = {selectedSongId}
@@ -185,7 +187,7 @@ function App() {
                             </aside>
                             
                             <section className="text-center bg-black">
-                                <SongForm 
+                                <SongForm
                                     song = {selectedSong}
                                     onComplete = {handleCompleteSong}
                                 />
