@@ -1,1 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+
 @import "tailwindcss";
+
+@theme {
+    --color-darkest-blue: #0B132B;
+    --color-dark-blue: #1C2541;
+    --color-mid-blue: #3A506B;
+    --color-light-blue: #5BC0BE;
+    --color-lightest-blue: #6FFFE9;
+    --font-sans: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+}
+
+ul {
+    transition: scrollbar-color 0.2s ease-in-out;
+}

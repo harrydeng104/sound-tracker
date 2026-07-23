@@ -103,40 +103,42 @@ function SongList({ onSongsLoaded, onSelectSong, onDelete, selectedSongId, songs
 
     return (<>
         <div className='flex flex-col h-full'>
-            <h1 className='text-xl font-semibold text-[#56ebff] p-1 shrink-0 border'>Songs</h1>
+            <h1 className='text-xl font-bold text-lightest-blue p-2 shrink-0'>Queue [{songs.length}]</h1>
 
-            <div className="border border-white p-1"> 
+            <div className="bg-mid-blue p-1 m-2 rounded-xl flex"> 
                 <input 
+                    className="flex-1 m-2 min-w-0"
                     type = "text"
-                    placeholder = " Enter playlist link..."
+                    placeholder = "Enter playlist link"
                     value = {newId}
                     onChange = {handleInputChange}
                     onKeyDown = {e => { if (e.key === 'Enter') setId() }}
                 />
                 <button 
-                    className="bg-gray-700 cursor-pointer pr-1 pl-1"
+                    className="bg-light-blue cursor-pointer pr-2 pl-2 p-1 rounded-xl hover:bg-lightest-blue text-darkest-blue"
                     onClick = {setId}
                 >
                     Enter
                 </button>
             </div>
 
-            <ul className='overflow-y-auto flex-1'>
+            <ul className='flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-transparent hover:scrollbar-thumb-light-blue snap-y snap-mandatory'>
                 {songs.map((song, index) => 
                     <li 
                         key = {song.id}
                         className={clsx(
-                            "p-1 flex items-center hover:bg-gray-700",
+                            "p-1 flex items-center hover:bg-light-blue m-2 rounded-xl snap-start",
                             {
-                                'border border-white': song.id === selectedSongId
+                                'bg-mid-blue': song.id === selectedSongId
                             }
                         )} 
                         onClick = {() => onSelectSong(song)}
                     >
+                        <span className='text-lightest-blue mr-3 ml-1 font-semibold'>{index + 1}</span>
                         {song.albumArt != null && (<img className="rounded-[5px] w-10 h-10 mr-1" src = {song.albumArt} />)}
                         <div className="text-left flex flex-col flex-1 whitespace-nowrap overflow-hidden">
                             <span>{song.name}</span>
-                            <span>{song.artists}</span>
+                            <span className="text-white/50">{song.artists}</span>
                         </div>
                         <button
                             className="ml-2 cursor-pointer"

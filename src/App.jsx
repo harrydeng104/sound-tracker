@@ -28,7 +28,7 @@ function App() {
 
     const compSongs = songs
         .filter(sng => sng.completed === true)
-        .sort((a, b) => b.totalScore - a.totalScore)
+        .sort((a, b) => b.totalScore - a.totalScore || a.name.localeCompare(b.name))
 
     const filteredQueue = queueSongs.filter(song => 
         song.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -125,7 +125,7 @@ function App() {
         }
 
         const logEntry = {
-            action: wasAlreadyCompleted ? 'updated' : 'completed',
+            action: wasAlreadyCompleted ? 'Updated' : 'Completed',
             songId: updated.id,
             songName: updated.name,
             artists: updated.artists,
@@ -161,22 +161,23 @@ function App() {
     const selectedSong = songs.find(s => s.id === selectedSongId) ?? null
 
     return (
-        <div className="text-white bg-slate-800 h-screen flex flex-col overflow-hidden">
+        <div className="text-white bg-darkest-blue h-screen overflow-hidden">
             <main>
                 {user ? (    
                     <>        
-                        <header className="bg-slate-800 text-center p-2 shrink-0">
-                            <h1 className="text-4xl font-bold text-[#56ebff]">SoundTracker</h1>
-                                <input 
-                                    className="border border-white mt-2"
-                                    type="text"
-                                    placeholder=" Search songs..."
-                                    value={searchQuery}
-                                    onChange={e => setSearchQuery(e.target.value)}
-                                />                        </header>
+                        <header className="flex items-center text-center p-2 shrink-0 justify-center gap-10">
+                            <h1 className="text-4xl font-bold text-lightest-blue">SoundTracker</h1>
+                            <input 
+                                className="bg-dark-blue mt-2 p-2 rounded-full w-100 pl-4"
+                                type="text"
+                                placeholder="Search songs"
+                                value={searchQuery}
+                                onChange={e => setSearchQuery(e.target.value)}
+                            />                        
+                        </header>
 
                         <div className="grid grid-cols-[1fr_1.5fr_1fr]">
-                            <aside className="text-center bg-gray-900 h-[calc(100vh-80px)] overflow-hidden">
+                            <aside className="text-center bg-dark-blue h-[calc(100vh-80px)] overflow-hidden rounded-2xl m-2">
                                 <SongList
                                     onSongsLoaded = {handleSongsLoaded}
                                     onSelectSong = {handleSelectSong}
@@ -186,14 +187,15 @@ function App() {
                                 />
                             </aside>
                             
-                            <section className="text-center bg-black">
+                            <section className="text-center bg-dark-blue rounded-2xl m-2">
                                 <SongForm
                                     song = {selectedSong}
                                     onComplete = {handleCompleteSong}
+                                    compSongs={compSongs}
                                 />
                             </section>
                             
-                            <aside className="text-center bg-gray-900 h-[calc(100vh-80px)] overflow-hidden">
+                            <aside className="text-center bg-dark-blue h-[calc(100vh-80px)] rounded-2xl overflow-hidden m-2">
                                 <MainList 
                                     songs = {filteredCompleted} 
                                     onUncomp = {handleUncompleteSong}
