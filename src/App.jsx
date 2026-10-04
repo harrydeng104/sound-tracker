@@ -104,6 +104,9 @@ function App() {
     }    
 
     async function handleCompleteSong(compSong) {
+        const confirmed = window.confirm(`Complete "${compSong.name}" with a score of ${compSong.totalScore}?`)
+        if (!confirmed) return
+
         const firebaseDoc = await getDoc(doc(db, 'songs', compSong.id))
         const wasAlreadyCompleted = firebaseDoc.exists() && firebaseDoc.data().completed === true
 
@@ -176,7 +179,7 @@ function App() {
                             />                        
                         </header>
 
-                        <div className="grid grid-cols-[1fr_1.5fr_1fr]">
+                        <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_minmax(0,1fr)]">
                             <aside className="text-center bg-dark-blue h-[calc(100vh-80px)] overflow-hidden rounded-2xl m-2">
                                 <SongList
                                     onSongsLoaded = {handleSongsLoaded}

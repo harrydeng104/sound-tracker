@@ -104,7 +104,7 @@ function SongForm({ song, onComplete, compSongs = [] }) {
             }}
         >
             <div className=''>
-                <h1 className="text-lightest-blue text-2xl font-bold p-2 text-decoration-line: underline">
+                <h1 className="text-lightest-blue text-2xl font-bold p-2 underline truncate">
                     <a href={song.externalUrls} target="_blank" rel="noopener noreferrer">
                         {song.name}
                     </a>
@@ -121,6 +121,7 @@ function SongForm({ song, onComplete, compSongs = [] }) {
                             type = "number"
                             min = "0"
                             max = "10"
+                            step="0.5"
                             value = {vocalScore ?? ''}
                             onChange = {e => validateAndSetScore(setVocalScore, e.target.valueAsNumber)}
                             onFocus={() => setFocusedField('vocals')}
@@ -134,6 +135,7 @@ function SongForm({ song, onComplete, compSongs = [] }) {
                             type = "number"
                             min = "0"
                             max = "10"
+                            step="0.5"
                             value = {backgroundScore ?? ''}
                             onChange = {e => validateAndSetScore(setBackgroundScore, e.target.valueAsNumber)}
                             onFocus={() => setFocusedField('background')}
@@ -147,6 +149,7 @@ function SongForm({ song, onComplete, compSongs = [] }) {
                             type = "number"
                             min = "0"
                             max = "10"
+                            step="0.5"
                             value = {lyricScore ?? ''}
                             onChange = {e => validateAndSetScore(setLyricScore, e.target.valueAsNumber)}
                             onFocus={() => setFocusedField('lyrics')}
@@ -160,6 +163,7 @@ function SongForm({ song, onComplete, compSongs = [] }) {
                             type = "number"
                             min = "0"
                             max = "10"
+                            step="0.5"
                             value = {cohesionScore ?? ''}
                             onChange = {e => validateAndSetScore(setCohesionScore, e.target.valueAsNumber)}
                             onFocus={() => setFocusedField('cohesion')}
@@ -173,6 +177,7 @@ function SongForm({ song, onComplete, compSongs = [] }) {
                             type = "number"
                             min = "0"
                             max = "10"
+                            step="0.5"
                             value = {flowScore ?? ''}
                             onChange = {e => validateAndSetScore(setFlowScore, e.target.valueAsNumber)}
                             onFocus={() => setFocusedField('flow')}
@@ -182,11 +187,13 @@ function SongForm({ song, onComplete, compSongs = [] }) {
 
                 <div className='flex flex-col max-h-80 m-2 rounded-2xl'>
                     <h1 className='font-semibold'>
-                        {focusedField && (scoreFields[focusedField].label + ': ' + (scoreFields[focusedField].value ?? ''))}
+                        {focusedField && (scoreFields[focusedField].label + ' Comparison: ' + (scoreFields[focusedField].value ?? ''))}
                     </h1>
                     <ul className='flex-1 bg-mid-blue rounded-xl m-1 overflow-y-auto scrollbar-thin scrollbar-thumb-transparent hover:scrollbar-thumb-light-blue snap-y snap-mandatory'>
                         {focusedField && matchlist.length === 0 && (
-                            <span className="text-white/50">No matched songs</span>
+                            <div className="flex flex-col h-full items-center justify-center">
+                                <span className="text-white/50">No matched songs</span>
+                            </div>
                         )}
                         {matchlist.map((song) => 
                             <li 

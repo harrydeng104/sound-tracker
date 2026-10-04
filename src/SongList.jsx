@@ -109,7 +109,7 @@ function SongList({ onSongsLoaded, onSelectSong, onDelete, selectedSongId, songs
                 <input 
                     className="flex-1 m-2 min-w-0"
                     type = "text"
-                    placeholder = "Enter playlist link"
+                    placeholder = "Upload playlist link"
                     value = {newId}
                     onChange = {handleInputChange}
                     onKeyDown = {e => { if (e.key === 'Enter') setId() }}
@@ -127,14 +127,14 @@ function SongList({ onSongsLoaded, onSelectSong, onDelete, selectedSongId, songs
                     <li 
                         key = {song.id}
                         className={clsx(
-                            "p-1 flex items-center hover:bg-light-blue m-2 rounded-xl snap-start",
+                            "p-1 flex items-center hover:bg-mid-blue m-2 rounded-xl snap-start",
                             {
-                                'bg-mid-blue': song.id === selectedSongId
+                                'text-lightest-blue': song.id === selectedSongId
                             }
                         )} 
                         onClick = {() => onSelectSong(song)}
                     >
-                        <span className='text-lightest-blue mr-3 ml-1 font-semibold'>{index + 1}</span>
+                        <span className='mr-3 ml-1 font-semibold'>{index + 1}</span>
                         {song.albumArt != null && (<img className="rounded-[5px] w-10 h-10 mr-1" src = {song.albumArt} />)}
                         <div className="text-left flex flex-col flex-1 whitespace-nowrap overflow-hidden">
                             <span>{song.name}</span>
