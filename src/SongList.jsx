@@ -4,7 +4,7 @@ import clsx from 'clsx'
 const clientId = import.meta.env.VITE_CLIENT_ID
 const clientSecret = import.meta.env.VITE_CLIENT_SECRET
 
-function SongList({ onSongsLoaded, onSelectSong, onDelete, selectedSongId, songs }) {
+function SongList({ onSongsLoaded, onSelectSong, onDelete, selectedSongId, songs, queues, selectedQueue, onSelectQueue, onAddQueue, onDeleteQueue, canDeleteQueue }) { 
     const [newId, setNewId] = useState("")
     const [playlistId, setPlaylistId] = useState("") 
     const [reload, forceReload] = useState(0)
@@ -30,6 +30,15 @@ function SongList({ onSongsLoaded, onSelectSong, onDelete, selectedSongId, songs
     function deleteSong(index) {
         const songToDelete = songs[index] 
         onDelete(songToDelete.id)
+    }
+
+    function addQueue() { 
+        const name = window.prompt("Name for the new queue?")
+        if (name == null) {
+            return
+        }
+        
+        onAddQueue(name)
     }
 
     useEffect(() => {
@@ -78,6 +87,7 @@ function SongList({ onSongsLoaded, onSelectSong, onDelete, selectedSongId, songs
                             releaseDate: song.album.release_date,
                             durationMs: song.duration_ms,
                             externalUrls: song.external_urls.spotify,
+                            totalTracks: song.album.total_tracks,
                             
                             vocalScore: null,
                             backgroundScore: null, 
@@ -104,6 +114,31 @@ function SongList({ onSongsLoaded, onSelectSong, onDelete, selectedSongId, songs
     return (<>
         <div className='flex flex-col h-full'>
             <h1 className='text-xl font-bold text-lightest-blue p-2 shrink-0'>Queue [{songs.length}]</h1>
+
+            <div className="p-1 m-2 gap-2 rounded-xl flex">
+                <select
+                    className="flex-1 min-w-0 bg-mid-blue text-lightest-blue font-bold p-1 pl-2 cursor-pointer rounded-xl"
+                    value={selectedQueue}
+                    onChange={e => onSelectQueue(e.target.value)}
+                >
+                    {queues.map(q => <option key={q} value={q}>{q}</option>)}
+                </select>
+                
+                <div>
+                    <button
+                        className="bg-light-blue cursor-pointer w-8 h-8 rounded-xl hover:bg-lightest-blue text-darkest-blue"
+                        onClick={addQueue}
+                    >+</button>
+                    
+                    {canDeleteQueue && (
+                        <button
+                                className="cursor-pointer w-8 h-8"
+                                onClick={() => onDeleteQueue(selectedQueue)}
+                                aria-label="Delete this queue"
+                        >🗑️</button>
+                    )}
+                </div>
+            </div>
 
             <div className="bg-mid-blue p-1 m-2 rounded-xl flex"> 
                 <input 

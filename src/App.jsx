@@ -3,9 +3,11 @@ import SongList from './SongList.jsx'
 import SongForm from './SongForm.jsx'
 import MainList from './MainList.jsx'
 
-import { doc, setDoc, deleteDoc, getDoc } from 'firebase/firestore'
+import { doc, setDoc, deleteDoc, getDoc, writeBatch } from 'firebase/firestore'
 import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from 'firebase/auth'
 import { db, auth } from './firebase'
+
+const DEFAULT_QUEUE = 'Main'
 
 function App() {
     const [songs, setSongs] = useState([])
@@ -15,15 +17,24 @@ function App() {
 
     const [searchQuery, setSearchQuery] = useState('')
 
+    const [queues, setQueues] = useState([])
+    const [selectedQueue, setSelectedQueue] = useState(DEFAULT_QUEUE)
+
     function getSortName(name) { //this is needed to make it match spotify alphabetical sorting
         return name
             .replace(/^[^\p{L}\p{N}]+/u, '')
             .replace(/^(the|a|an)\s+/i, '')
             .trim()
     }    
+
+    const allQueues = [DEFAULT_QUEUE, ...queues]
+
+    function getQueue(song) {
+        return allQueues.includes(song.queue) ? song.queue : DEFAULT_QUEUE
+    }
     
     const queueSongs = songs
-        .filter(sng => sng.completed !== true)
+        .filter(sng => sng.completed !== true && getQueue(sng) === selectedQueue)
         .sort((a, b) => getSortName(a.name).localeCompare(getSortName(b.name)))
 
     const compSongs = songs
@@ -57,6 +68,7 @@ function App() {
             const data = await response.json()
             const loadedSongs = data.songs
             setSongs(loadedSongs)
+            setQueues(data.queues ?? [])
         }
         loadSongs()
     }, [])
@@ -65,15 +77,24 @@ function App() {
         if (selectedSongId === null && queueSongs.length > 0) {
             setSelectedSongId(queueSongs[0].id)
         }
-    }, [songs])
+    }, [songs, selectedQueue])
 
     function handleSongsLoaded(loadedSongs) {
         setSongs(existing => {
             const existingIds = new Set(existing.map(s => s.id))
-            const newSongs = loadedSongs.filter(song => !existingIds.has(song.id))
+            const newSongs = loadedSongs
+                .filter(song => {
+                    if (existingIds.has(song.id)) {
+                        return false
+                    }
+                    existingIds.add(song.id)
+                    return true
+                })
+                .map(song => ({ ...song, queue: selectedQueue }))
+
             const combined = [...existing, ...newSongs]
-            const incompleteCount = combined.filter(s => !s.completed).length
-            setSelectedSongId(incompleteCount > 0 ? combined.filter(s => !s.completed)[0].id : null)
+            const inQueue = combined.filter(s => !s.completed && getQueue(s) === selectedQueue)
+            setSelectedSongId(inQueue.length > 0 ? inQueue[0].id : null)
 
             newSongs.forEach(song => {
                 setDoc(doc(db, 'songs', song.id), song)
@@ -85,6 +106,51 @@ function App() {
 
     function handleSelectSong(song) {
         setSelectedSongId(song.id)
+    }
+
+    function handleSelectQueue(queueName) {
+        setSelectedQueue(queueName)
+        setSelectedSongId(null)
+    }
+
+    function handleAddQueue(queueName) {
+        const name = queueName.trim()
+        if (!name) {
+            return
+        }
+
+        if (allQueues.some(q => q.toLowerCase() === name.toLowerCase())) {
+            window.alert(`A queue named "${name}" already exists.`)
+            return
+        }
+
+        setDoc(doc(db, 'queues', name), {})
+        setQueues(q => [...q, name])
+        handleSelectQueue(name)
+    }
+
+    async function handleDeleteQueue(queueName) {
+        if (queueName === DEFAULT_QUEUE) {
+            return
+        }
+
+        const deletedSongs = songs.filter(s => getQueue(s) === queueName && !s.completed)
+        const confirmed = window.confirm(`Are you sure you want to delete the queue "${queueName}"?`)
+        if (!confirmed) {
+            return
+        }
+
+        for (let i = 0; i < deletedSongs.length; i += 500) {
+            const batch = writeBatch(db)
+            deletedSongs.slice(i, i + 500).forEach(s => batch.delete(doc(db, 'songs', s.id)))
+            await batch.commit()
+        }
+        await deleteDoc(doc(db, 'queues', queueName))
+
+        const deletedIds = deletedSongs.map(s => s.id)
+        setSongs(s => s.filter(song => !deletedIds.includes(song.id)))
+        setQueues(q => q.filter(name => name !== queueName))
+        handleSelectQueue(DEFAULT_QUEUE)
     }
     
     function handleUncompleteSong(uncompSong) {
@@ -152,7 +218,7 @@ function App() {
         
         setSongs(s => s.filter(song => song.id !== songId))
         
-        const remainingQueue = songs.filter(s => s.id !== songId && !s.completed)
+        const remainingQueue = queueSongs.filter(s => s.id !== songId)
         setSelectedSongId(remainingQueue.length > 0 ? remainingQueue[0].id : null)
     }
 
@@ -187,6 +253,12 @@ function App() {
                                     onDelete = {handleDeleteSong}
                                     selectedSongId = {selectedSongId}
                                     songs = {filteredQueue}
+                                    queues = {allQueues}
+                                    selectedQueue = {selectedQueue}
+                                    onSelectQueue = {handleSelectQueue}
+                                    onAddQueue = {handleAddQueue}
+                                    onDeleteQueue = {handleDeleteQueue}
+                                    canDeleteQueue = {selectedQueue !== DEFAULT_QUEUE}
                                 />
                             </aside>
                             

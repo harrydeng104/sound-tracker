@@ -15,17 +15,20 @@ const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 
 async function exportData() {
-  const [songsSnapshot, logsSnapshot] = await Promise.all([
+  const [songsSnapshot, logsSnapshot, queuesSnapshot] = await Promise.all([
       getDocs(collection(db, 'songs')),
-      getDocs(collection(db, 'logs'))
+      getDocs(collection(db, 'logs')),
+      getDocs(collection(db, 'queues'))
   ])
 
   const songs = songsSnapshot.docs.map(doc => doc.data())
   const logs = logsSnapshot.docs.map(doc => doc.data())
+  const queues = queuesSnapshot.docs.map(doc => doc.id)
 
   const data = {
     songs,
     logs,
+    queues,
     lastUpdated: new Date().toISOString()
   }
 
